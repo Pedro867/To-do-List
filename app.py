@@ -1,6 +1,18 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
+from dotenv import load_dotenv
+
+load_dotenv() # Carrega variáveis do .env
 
 app = Flask(__name__, static_folder='static')
+
+# Configurando app
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+from database import db
+db.init_app(app) # Inicializa o BD
 
 @app.route("/")
 def index():
