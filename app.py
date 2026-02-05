@@ -14,13 +14,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 from database import db
 db.init_app(app) # Inicializa o BD
 
+with app.app_context():
+    db.create_all() # Fabrica as tabelas no banco
+
 @app.route("/")
 def index():
     return redirect(url_for('login'))
                     
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    from models import User
+    from models.user import User
     if request.method == 'POST':
         email = request.form.get('email')
         senha = request.form.get('senha')
@@ -38,11 +41,12 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    from models.user import User
     if request.method == 'POST':
         nome = request.form.get('name')
         email = request.form.get('email')
         senha = request.form.get('senha')
-        confirma_senha = request.form.get('confirmar_senha  ')
+        confirma_senha = request.form.get('confirmar_senha')
 
         if not nome:
             return {
@@ -61,10 +65,28 @@ def register():
                 'status': 'erro',
                 'msg'   : 'As senhas não coincidem.' 
             }, 400
-
         
-        # Aqui entrará a lógica para salvar no PostgreSQL
-        return "Cadastrou"
+        user_exists = User.query.filter_by(email=email).first()
+        if user_exists:
+            return {
+                'status': 'erro',
+                'msg'   : 'Esse e-mail já está cadastrado.' 
+            }, 400
+        
+        new_user = User(name=nome, email=email)
+        new_user.set_password(senha)
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            return {
+                'status': 'erro',
+                'msg'   : f'Erro ao salvar: {e}.' 
+            }, 500
+                
     else:
         return render_template("register.html")
 
