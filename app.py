@@ -18,10 +18,12 @@ db.init_app(app) # Inicializa o BD
 with app.app_context():
     db.create_all() # Fabrica as tabelas no banco
 
+
 @app.route("/")
 def index():
     return redirect(url_for('login'))
-                    
+
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -29,15 +31,20 @@ def login():
         senha = request.form.get('senha')
         user = User.query.filter_by(email=email).first()
         
-        if user and user.check_senha(senha):
-            return "logou"
-        else:
+        if not user:
             return {
                 'status': 'erro',
-                'msg'   : 'E-mail ou senha incorretos.' 
+                'msg'   : 'E-mail não cadastrado.' 
             }, 401
+        if not user.check_senha(senha):
+            return {
+                'status': 'erro',
+                'msg'   : 'Senha incorreta.' 
+            }, 401
+        return render_template("base_logado.html", username = user.name)
     else:
         return render_template("login.html")
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -88,6 +95,12 @@ def register():
                 
     else:
         return render_template("register.html")
+
+
+@app.route("/logout")
+def logout():
+    return render_template("login.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
