@@ -20,8 +20,19 @@ def index():
                     
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    from models import User
     if request.method == 'POST':
-        return "Faz login"
+        email = request.form.get('email')
+        senha = request.form.get('senha')
+        user = User.query.filter_by(email=email).first()
+        
+        if user and user.check_senha(senha):
+            return "logou"
+        else:
+            return {
+                'status': 'erro',
+                'msg'   : 'E-mail ou senha incorretos.' 
+            }, 401
     else:
         return render_template("login.html")
 
@@ -33,9 +44,24 @@ def register():
         senha = request.form.get('senha')
         confirma_senha = request.form.get('confirmar_senha  ')
 
-        # Validação simples
+        if not nome:
+            return {
+                'status': 'erro',
+                'msg'   : 'O nome está vazio.' 
+            }, 400
+        
+        if not email:
+            return {
+                'status': 'erro',
+                'msg'   : 'O e-mail está vazio.' 
+            }, 400
+        
         if senha != confirma_senha:
-            return "As senhas não coincidem!", 400
+            return {
+                'status': 'erro',
+                'msg'   : 'As senhas não coincidem.' 
+            }, 400
+
         
         # Aqui entrará a lógica para salvar no PostgreSQL
         return "Cadastrou"
