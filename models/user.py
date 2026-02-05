@@ -5,9 +5,10 @@ class User(db.Model):
     __tablename__ = 'users' # Nome da tabela no Postgres
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     senha_hash = db.Column(db.String(255), nullable=False)
+    adm = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
         return f'<User {self.email}>'

@@ -9,7 +9,7 @@
             
             <div class="d-flex align-items-center">
                 <span class="navbar-text text-white me-3">
-                    Olá, <strong>{{ username if username else "Usuário" }}</strong>
+                    Olá, <strong>{{ username.split()[0] if username else "Usuário" }}</strong>
                 </span>
                 <a href="/logout" class="btn btn-outline-light btn-sm">Sair</a>
             </div>

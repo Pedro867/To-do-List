@@ -1,0 +1,55 @@
+{% extends "base_logado.html" %}
+
+{% block title %}Minhas Tarefas{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold">Minhas Tarefas</h2>
+                <p class="text-muted">Você tem <span class="badge bg-primary">3 tarefas</span> para hoje.</p>
+            </div>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                <i class="bi bi-plus-lg"></i> Nova Tarefa
+            </button>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form class="d-flex gap-2">
+                    <input type="text" class="form-control" placeholder="O que precisa ser feito?">
+                    <button type="submit" class="btn btn-primary px-4">Adicionar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="list-group shadow-sm">
+            <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <div class="d-flex align-items-center">
+                    <input class="form-check-input me-3" type="checkbox" value="" id="task1">
+                    <label class="form-check-label" for="task1">
+                        Finalizar a conexão com o banco de dados
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-secondary">Editar</button>
+                    <button class="btn btn-sm btn-outline-danger">Excluir</button>
+                </div>
+            </div>
+
+            <div class="list-group-item d-flex justify-content-between align-items-center p-3 bg-light">
+                <div class="d-flex align-items-center text-decoration-line-through text-muted">
+                    <input class="form-check-input me-3" type="checkbox" value="" id="task2" checked>
+                    <label class="form-check-label" for="task2">
+                        Configurar o Git e GitHub
+                    </label>
+                </div>
+                <button class="btn btn-sm btn-outline-danger">Excluir</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}  

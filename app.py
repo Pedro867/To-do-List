@@ -41,7 +41,7 @@ def login():
                 'status': 'erro',
                 'msg'   : 'Senha incorreta.' 
             }, 401
-        return render_template("base_logado.html", username = user.name)
+        return render_template("dashboard.html", username = user.nome)
     else:
         return render_template("login.html")
 
@@ -49,7 +49,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        nome           = request.form.get('name')
+        nome           = request.form.get('nome')
         email          = request.form.get('email')
         senha          = request.form.get('senha')
         confirma_senha = request.form.get('confirmar_senha')
@@ -79,7 +79,7 @@ def register():
                 'msg'   : 'Esse e-mail já está cadastrado.' 
             }, 400
         
-        new_user = User(name=nome, email=email)
+        new_user = User(nome=nome, email=email, adm=False)
         new_user.set_senha(senha)
 
         try:
