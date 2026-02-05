@@ -13,5 +13,22 @@ def login():
     else:
         return render_template("login.html")
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        nome = request.form.get('name')
+        email = request.form.get('email')
+        senha = request.form.get('senha')
+        confirma_senha = request.form.get('confirmar_senha  ')
+
+        # Validação simples
+        if senha != confirma_senha:
+            return "As senhas não coincidem!", 400
+        
+        # Aqui entrará a lógica para salvar no PostgreSQL
+        return "Cadastrou"
+    else:
+        return render_template("register.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
