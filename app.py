@@ -36,12 +36,25 @@ def login():
                 'status': 'erro',
                 'msg'   : 'E-mail não cadastrado.' 
             }, 401
+        
         if not user.check_senha(senha):
             return {
                 'status': 'erro',
                 'msg'   : 'Senha incorreta.' 
             }, 401
-        return render_template("dashboard.html", username = user.nome)
+        
+        if user.adm:
+            list_users = User.query.all()
+            return render_template(
+                "dashboard_admin.html", 
+                username   = user.nome, 
+                list_users = list_users
+            )
+        else:
+            return render_template(
+                "dashboard.html", 
+                username = user.nome
+            )
     else:
         return render_template("login.html")
 
