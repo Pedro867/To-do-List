@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="text-center w-100">
                 <h2 class="fw-bold">Painel Administrador</h2>
-                <p class="text-muted">Você tem <span class="badge bg-primary">{{ list_users | length }} Usuários</span> no sistema hoje.</p>
+                <p class="text-muted">Você tem <span class="badge bg-primary">{{ list_usuarios | length }} Usuários</span> no sistema hoje.</p>
             </div>
         </div>
 
@@ -25,17 +25,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in list_users %}
+                    {% for usuario in list_usuarios %}
                     <tr>
-                        <td class="align-middle ps-4">{{ user.nome }}</td>
-                        <td class="text-muted align-middle">{{ user.email }}</td>
+                        <td class="align-middle ps-4">{{ usuario.nome }}</td>
+                        <td class="text-muted align-middle">{{ usuario.email }}</td>
                         <td class="text-center align-middle">
-                            <span class="badge rounded-pill {{ 'bg-success' if user.tarefas|length > 0 else 'bg-secondary' }}">
-                                {{ user.tarefas | length }}
+                            <span class="badge rounded-pill {{ 'bg-success' if usuario.tarefas|length > 0 else 'bg-secondary' }}">
+                                {{ usuario.tarefas | length }}
                             </span>
                         </td>
                         <td class="text-center align-middle">
-                            <a href="/admin/user/{{ user.id }}" class="btn btn-sm btn-outline-primary">
+                            <a href="/admin/usuario/{{ usuario.id }}" class="btn btn-sm btn-outline-primary">
                                 Ver Detalhes
                             </a>
                         </td>

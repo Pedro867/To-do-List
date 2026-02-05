@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
-from models.user import User
+from models.usuarios import Usuario
 
 load_dotenv() # Carrega variáveis do .env
 
@@ -29,31 +29,31 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         senha = request.form.get('senha')
-        user = User.query.filter_by(email=email).first()
+        usuario = Usuario.query.filter_by(email=email).first()
         
-        if not user:
+        if not usuario:
             return {
                 'status': 'erro',
                 'msg'   : 'E-mail não cadastrado.' 
             }, 401
         
-        if not user.check_senha(senha):
+        if not usuario.check_senha(senha):
             return {
                 'status': 'erro',
                 'msg'   : 'Senha incorreta.' 
             }, 401
         
-        if user.adm:
-            list_users = User.query.all()
+        if usuario.adm:
+            list_usuarios = Usuario.query.all()
             return render_template(
                 "dashboard_admin.html", 
-                username   = user.nome, 
-                list_users = list_users
+                nome_usuario   = usuario.nome, 
+                list_usuarios = list_usuarios
             )
         else:
             return render_template(
                 "dashboard.html", 
-                username = user.nome
+                nome_usuario = usuario.nome
             )
     else:
         return render_template("login.html")
@@ -85,18 +85,18 @@ def register():
                 'msg'   : 'As senhas não coincidem.' 
             }, 400
         
-        user_exists = User.query.filter_by(email=email).first()
-        if user_exists:
+        usuario_existe = Usuario.query.filter_by(email=email).first()
+        if usuario_existe:
             return {
                 'status': 'erro',
                 'msg'   : 'Esse e-mail já está cadastrado.' 
             }, 400
         
-        new_user = User(nome=nome, email=email, adm=False)
-        new_user.set_senha(senha)
+        novo_usuario = Usuario(nome=nome, email=email, adm=False)
+        novo_usuario.set_senha(senha)
 
         try:
-            db.session.add(new_user)
+            db.session.add(novo_usuario)
             db.session.commit()
             return redirect(url_for('login'))
         except Exception as e:

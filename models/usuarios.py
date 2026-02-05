@@ -1,8 +1,8 @@
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(db.Model):
-    __tablename__ = 'users' # Nome da tabela no Postgres
+class Usuario(db.Model):
+    __tablename__ = 'usuarios' # Nome da tabela no Postgres
     
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -11,7 +11,7 @@ class User(db.Model):
     adm = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return f'<User {self.email}>'
+        return f'<Usuario {self.email}>'
     
     def set_senha(self, senha):
         self.senha_hash = generate_password_hash(senha)
