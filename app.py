@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from dotenv import load_dotenv
+from models.user import User
 
 load_dotenv() # Carrega variáveis do .env
 
@@ -23,7 +24,6 @@ def index():
                     
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    from models.user import User
     if request.method == 'POST':
         email = request.form.get('email')
         senha = request.form.get('senha')
@@ -41,11 +41,10 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    from models.user import User
     if request.method == 'POST':
-        nome = request.form.get('name')
-        email = request.form.get('email')
-        senha = request.form.get('senha')
+        nome           = request.form.get('name')
+        email          = request.form.get('email')
+        senha          = request.form.get('senha')
         confirma_senha = request.form.get('confirmar_senha')
 
         if not nome:
@@ -74,7 +73,7 @@ def register():
             }, 400
         
         new_user = User(name=nome, email=email)
-        new_user.set_password(senha)
+        new_user.set_senha(senha)
 
         try:
             db.session.add(new_user)
