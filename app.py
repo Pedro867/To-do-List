@@ -1,7 +1,8 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from dotenv import load_dotenv
 from models.usuarios import Usuario
+from models.tarefas import Tarefa
 
 load_dotenv() # Carrega variáveis do .env
 
@@ -43,18 +44,10 @@ def login():
                 'msg'   : 'Senha incorreta.' 
             }, 401
         
-        if usuario.adm:
-            list_usuarios = Usuario.query.all()
-            return render_template(
-                "dashboard_admin.html", 
-                nome_usuario   = usuario.nome, 
-                list_usuarios = list_usuarios
-            )
-        else:
-            return render_template(
-                "dashboard.html", 
-                nome_usuario = usuario.nome
-            )
+        session['id_usuario']   = usuario.id
+        session['nome_usuario'] = usuario.nome
+        
+        return redirect(url_for('dashboard'))
     else:
         return render_template("login.html")
 
@@ -113,6 +106,39 @@ def register():
 @app.route("/logout")
 def logout():
     return render_template("login.html")
+
+
+@app.route("/add_tarefa", methods=['POST'])
+def add_tarefa():
+    if request.method == 'POST':
+        nome_tarefa = request.form.get('nome_tarefa')
+        id_usuario  = session['id_usuario']
+        if nome_tarefa and id_usuario:
+            nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=1)
+            db.session.add(nova_tarefa)
+            db.session.commit()
+    
+    return redirect(url_for('dashboard'))
+
+
+@app.route("/dashboard")
+def dashboard():
+    id_usuario = session['id_usuario']
+    usuario    = Usuario.query.filter_by(id=id_usuario).first()
+    if usuario.adm:
+        list_usuarios = Usuario.query.all()
+        return render_template(
+            "dashboard_admin.html", 
+            nome_usuario   = usuario.nome,
+            list_usuarios  = list_usuarios
+        )
+    else:
+        return render_template(
+            "dashboard.html", 
+            nome_usuario = usuario.nome,
+            id_usuario   = usuario.id,
+            list_tarefas = usuario.tarefas
+        )
 
 
 if __name__ == '__main__':

@@ -7,30 +7,33 @@
     <div class="col-md-8">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
+            <div class="text-center w-100">
                 <h2 class="fw-bold">Minhas Tarefas</h2>
-                <p class="text-muted">Você tem <span class="badge bg-primary">3 tarefas</span> para hoje.</p>
+                <p class="text-muted">
+                    Você tem 
+                    <span class="badge bg-primary">{{ list_tarefas | length }} tarefas</span> 
+                    no total.
+                </p>
             </div>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                <i class="bi bi-plus-lg"></i> Nova Tarefa
-            </button>
         </div>
 
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <form class="d-flex gap-2">
-                    <input type="text" class="form-control" placeholder="O que precisa ser feito?">
+                <form action="/add_tarefa" method="POST" class="d-flex gap-2">
+                    <input type="text" name="nome_tarefa" class="form-control" placeholder="O que precisa ser feito?" required>
                     <button type="submit" class="btn btn-primary px-4">Adicionar</button>
                 </form>
             </div>
         </div>
 
         <div class="list-group shadow-sm">
-            <div class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <div class="d-flex align-items-center">
-                    <input class="form-check-input me-3" type="checkbox" value="" id="task1">
-                    <label class="form-check-label" for="task1">
-                        Finalizar a conexão com o banco de dados
+            {% for tarefa in list_tarefas %}
+            <div class="list-group-item d-flex justify-content-between align-items-center p-3 {{ 'bg-light' if tarefa.concluida }}">
+                <div class="d-flex align-items-center {{ 'text-decoration-line-through text-muted' if tarefa.concluida }}">
+                    <input class="form-check-input me-3" type="checkbox" value="" id="task-{{ tarefa.id }}" {{ 'checked' if tarefa.concluida }}>
+                    <label class="form-check-label" for="task-{{ tarefa.id }}">
+                        {{ tarefa.nome_tarefa }} 
+                        <small class="ms-2 text-primary">(Prioridade: {{ tarefa.prioridade_tarefa }})</small>
                     </label>
                 </div>
                 <div class="btn-group">
@@ -38,18 +41,13 @@
                     <button class="btn btn-sm btn-outline-danger">Excluir</button>
                 </div>
             </div>
-
-            <div class="list-group-item d-flex justify-content-between align-items-center p-3 bg-light">
-                <div class="d-flex align-items-center text-decoration-line-through text-muted">
-                    <input class="form-check-input me-3" type="checkbox" value="" id="task2" checked>
-                    <label class="form-check-label" for="task2">
-                        Configurar o Git e GitHub
-                    </label>
-                </div>
-                <button class="btn btn-sm btn-outline-danger">Excluir</button>
+            {% else %}
+            <div class="list-group-item text-center py-4 text-muted">
+                Nenhuma tarefa encontrada. Comece adicionando uma acima!
             </div>
+            {% endfor %}
         </div>
 
     </div>
 </div>
-{% endblock %}  
+{% endblock %}
