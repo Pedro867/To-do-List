@@ -108,17 +108,60 @@ def logout():
     return render_template("login.html")
 
 
-@app.route("/add_tarefa", methods=['POST'])
-def add_tarefa():
+@app.route("/tarefa/add", methods=['POST'])
+def adicionar_tarefa():
     if request.method == 'POST':
         nome_tarefa = request.form.get('nome_tarefa')
         id_usuario  = session['id_usuario']
         if nome_tarefa and id_usuario:
-            nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=1)
+            nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=2)
             db.session.add(nova_tarefa)
             db.session.commit()
     
     return redirect(url_for('dashboard'))
+
+
+@app.route("/tarefa/edi/<int:id_tarefa>", methods=['POST'])
+def editar_tarefa(id_tarefa):
+    novo_nome_tarefa       = request.form.get('nome')
+    nova_prioridade_tarefa = int(request.form.get('prioridade'))
+    tarefa                 = Tarefa.query.filter_by(id=id_tarefa).first()
+
+    if not novo_nome_tarefa or not nova_prioridade_tarefa:
+        return {
+            'status': 'erro',
+            'msg'   : 'Dados da tarefa não foram recebidos'
+        }, 400
+
+    if tarefa.id_usuario == session.get('id_usuario'):
+        tarefa.nome_tarefa              = novo_nome_tarefa
+        tarefa.prioridade_tarefa = nova_prioridade_tarefa
+        db.session.commit()
+    
+    return redirect(url_for('dashboard'))
+
+
+@app.route("/tarefa/del/<int:id_tarefa>", methods=['POST'])
+def deletar_tarefa(id_tarefa):
+    tarefa     = Tarefa.query.filter_by(id=id_tarefa).first()
+    if tarefa.id_usuario == session.get('id_usuario'):
+        db.session.delete(tarefa)
+        db.session.commit()
+    
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/tarefa/concluir/<int:id_tarefa>', methods=['GET'])
+def concluir(id_tarefa):
+    tarefa = Tarefa.query.get_or_404(id_tarefa)
+    if tarefa.id_usuario == session.get('id_usuario'):
+        tarefa.concluida = not tarefa.concluida
+        db.session.commit()
+        return '', 204
+    return {
+        'status': 'erro',
+        'msg'   : 'Acesso não autorizado.'
+    }, 403
 
 
 @app.route("/dashboard")
@@ -133,11 +176,12 @@ def dashboard():
             list_usuarios  = list_usuarios
         )
     else:
+        list_tarefas = Tarefa.query.filter_by(id_usuario=id_usuario).order_by(Tarefa.prioridade_tarefa).all()
         return render_template(
             "dashboard.html", 
             nome_usuario = usuario.nome,
             id_usuario   = usuario.id,
-            list_tarefas = usuario.tarefas
+            list_tarefas = list_tarefas
         )
 
 

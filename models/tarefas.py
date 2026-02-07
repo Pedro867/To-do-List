@@ -7,7 +7,7 @@ class Tarefa(db.Model):
     id                = db.Column(db.Integer, primary_key=True)
     id_usuario        = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     nome_tarefa       = db.Column(db.String(120), nullable=False)
-    prioridade_tarefa = db.Column(db.Integer, default=1, nullable=False)
+    prioridade_tarefa = db.Column(db.Integer, default=2, nullable=False)
     data_tarefa       = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     concluida         = db.Column(db.Boolean, default=False, nullable=False)
 

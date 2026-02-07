@@ -5,13 +5,13 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="text-center w-100">
                 <h2 class="fw-bold">Minhas Tarefas</h2>
                 <p class="text-muted">
-                    Você tem 
-                    <span class="badge bg-primary">{{ list_tarefas | length }} tarefas</span> 
+                    Você tem
+                    <span class="badge bg-primary">{{ list_tarefas | length }} tarefas</span>
                     no total.
                 </p>
             </div>
@@ -19,35 +19,130 @@
 
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <form action="/add_tarefa" method="POST" class="d-flex gap-2">
-                    <input type="text" name="nome_tarefa" class="form-control" placeholder="O que precisa ser feito?" required>
+                <form action="/tarefa/add" method="POST" class="d-flex gap-2">
+                    <input type="text" name="nome_tarefa" class="form-control" placeholder="O que precisa ser feito?"
+                        required>
                     <button type="submit" class="btn btn-primary px-4">Adicionar</button>
                 </form>
             </div>
         </div>
 
-        <div class="list-group shadow-sm">
-            {% for tarefa in list_tarefas %}
-            <div class="list-group-item d-flex justify-content-between align-items-center p-3 {{ 'bg-light' if tarefa.concluida }}">
-                <div class="d-flex align-items-center {{ 'text-decoration-line-through text-muted' if tarefa.concluida }}">
-                    <input class="form-check-input me-3" type="checkbox" value="" id="task-{{ tarefa.id }}" {{ 'checked' if tarefa.concluida }}>
-                    <label class="form-check-label" for="task-{{ tarefa.id }}">
-                        {{ tarefa.nome_tarefa }} 
-                        <small class="ms-2 text-primary">(Prioridade: {{ tarefa.prioridade_tarefa }})</small>
-                    </label>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-sm btn-outline-secondary">Editar</button>
-                    <button class="btn btn-sm btn-outline-danger">Excluir</button>
-                </div>
-            </div>
-            {% else %}
-            <div class="list-group-item text-center py-4 text-muted">
-                Nenhuma tarefa encontrada. Comece adicionando uma acima!
-            </div>
-            {% endfor %}
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover align-middle mb-0 text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" style="width: 60px;">#</th>
+                        <th scope="col" style="width: 80px;">Status</th>
+                        <th scope="col">Tarefa</th>
+                        <th scope="col">Prioridade</th>
+                        <th scope="col" style="width: 150px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarefa in list_tarefas %}
+                    <tr id="tarefa-container-{{ tarefa.id }}"
+                        class="{{ 'table-light text-muted text-decoration-line-through' if tarefa.concluida }}">
+                        <th scope="row">{{ loop.index }}</th>
+
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" {{ 'checked' if tarefa.concluida }}
+                                    onclick="toggleConcluida({{ tarefa.id }})">
+                            </div>
+                        </td>
+
+                        <td class="text-center"> <strong>{{ tarefa.nome_tarefa }}</strong>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                                {% set prioridade = {1 : 'Alta', 2 : 'Média', 3 : 'Baixa'} %}
+                                {{ prioridade[tarefa.prioridade_tarefa] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="prepararEdit({{ tarefa.id }}, '{{ tarefa.nome_tarefa }}', {{ tarefa.prioridade_tarefa }})"
+                                    data-bs-toggle="modal" data-bs-target="#editModal"> Editar
+                                </button>
+
+                                <button class="btn btn-sm btn-outline-danger" onclick="deletarTarefa({{ tarefa.id }})">
+                                    Excluir
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            Nenhuma tarefa encontrada.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+
 
     </div>
 </div>
+
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="editForm" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Tarefa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="nome">Título da Tarefa</label>
+                    <input type="text" name="nome" id="editNome" class="form-control mb-3" required>
+
+                    <label for="prioridade">Prioridade</label>
+                    <select name="prioridade" id="editPrio" class="form-select">
+                        <option value="1">Alta</option>
+                        <option value="2">Média</option>
+                        <option value="3">Baixa</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleConcluida(tarefaId) {
+        fetch(`/tarefa/concluir/${tarefaId}`, { method: 'GET' })
+            .then(response => {
+                if (response.ok) {
+                    const container = document.getElementById(`tarefa-container-${tarefaId}`);
+                    container.classList.toggle('text-decoration-line-through');
+                    container.classList.toggle('text-muted');
+                }
+            })
+    }
+
+    function deletarTarefa(id) {
+        if (!confirm("Deseja realmente excluir esta tarefa?")) return;
+
+        fetch(`/tarefa/del/${id}`, { method: 'POST' })
+        .then(response => {
+            if (response.ok) {
+                location.reload(); 
+            }
+        });
+    }
+
+    function prepararEdit(id, nome, prio) {
+        document.getElementById('editForm').action = `/tarefa/edi/${id}`;
+        document.getElementById('editNome').value = nome;
+        document.getElementById('editPrio').value = prio;
+    }
+</script>
 {% endblock %}
