@@ -5,7 +5,7 @@
 {% block header %}
     <nav class="navbar navbar-expand-lg navbar-dark custom-navbar mb-5">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
+            <a class="navbar-brand d-flex align-items-center" href="/dashboard">
                 <span class="me-2">✅</span> To-do List
             </a>
             
@@ -13,9 +13,14 @@
                 <span class="navbar-text text-white me-3 user-greeting">
                     Olá, <span class="fw-bold text-info">{{ nome_usuario.split()[0] if nome_usuario else "Visitante" }}</span>
                 </span>
-                
-                <a href="/logout" class="btn btn-outline-light btn-sm btn-logout">
-                    Sair
+                    
+                <a href="/perfil" class="profile-icon-btn" title="Configurações de Perfil">
+                    <div class="profile-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg>
+                    </div>
                 </a>
             </div>
         </div>

@@ -1,0 +1,46 @@
+{% extends "base_logado.html" %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: none;">
+                    <div class="profile-avatar-large mx-auto mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-white mb-0">{{ nome_usuario if nome_usuario else "Usuário" }}</h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <h5 class="mb-4">Configurações da Conta</h5>
+                    
+                    <form action="/perfil/editar_perfil" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Nome Completo</label>
+                            <input type="text" class="form-control" name="nome_usuario" value="{{ nome_usuario }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Nova Senha</label>
+                            <input type="password" class="form-control" name="senha" placeholder="Deixe em branco para manter a atual">
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary shadow-sm" style="border-radius: 10px;">Salvar Alterações</button>
+                            <hr class="my-3">
+                            <a href="/logout" class="btn btn-outline-danger" style="border-radius: 10px;">
+                                <i class="bi bi-box-arrow-right"></i> Sair da Conta
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

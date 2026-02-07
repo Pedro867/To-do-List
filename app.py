@@ -147,7 +147,7 @@ def editar_tarefa(id_tarefa):
         }, 400
 
     if tarefa.id_usuario == session.get('id_usuario'):
-        tarefa.nome_tarefa              = novo_nome_tarefa
+        tarefa.nome_tarefa       = novo_nome_tarefa
         tarefa.prioridade_tarefa = nova_prioridade_tarefa
         db.session.commit()
     
@@ -183,7 +183,6 @@ def concluir(id_tarefa):
 @login_required
 def dashboard():
     id_usuario = session.get('id_usuario')
-        
     usuario    = Usuario.query.filter_by(id=id_usuario).first()
     if usuario.adm:
         list_usuarios = Usuario.query.all()
@@ -200,6 +199,28 @@ def dashboard():
             id_usuario   = usuario.id,
             list_tarefas = list_tarefas
         )
+
+
+@app.route("/perfil")
+@login_required
+def perfil():
+    return render_template('perfil.html', nome_usuario = session['nome_usuario'])
+
+@app.route("/perfil/editar_perfil", methods=['POST'])
+@login_required
+def editar_perfil():
+    novo_nome  = request.form.get('nome_usuario')
+    nova_senha = request.form.get('senha')
+    usuario    = Usuario.query.get(session['id_usuario'])   
+
+    if novo_nome:
+        usuario.nome = novo_nome
+        session['nome_usuario'] = novo_nome
+    if nova_senha:
+        usuario.senha = Usuario.set_senha(nova_senha)   
+    db.session.commit()
+
+    return render_template('perfil.html', nome_usuario = session['nome_usuario'])
 
 
 if __name__ == '__main__':

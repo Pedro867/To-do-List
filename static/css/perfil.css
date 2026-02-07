@@ -1,0 +1,26 @@
+.profile-icon-btn {
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.profile-icon-btn:hover .profile-avatar {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #0dcaf0; /* Cor de destaque (info) */
+    transform: scale(1.05);
+    color: #0dcaf0;
+}
