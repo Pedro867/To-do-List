@@ -4,6 +4,16 @@ from dotenv import load_dotenv
 from models.usuarios import Usuario
 from models.tarefas import Tarefa
 
+from functools import wraps
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'id_usuario' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 load_dotenv() # Carrega variáveis do .env
 
 app = Flask(__name__, static_folder='static')
@@ -105,10 +115,12 @@ def register():
 
 @app.route("/logout")
 def logout():
-    return render_template("login.html")
+    session.clear()
+    return redirect(url_for('login'))
 
 
 @app.route("/tarefa/add", methods=['POST'])
+@login_required
 def adicionar_tarefa():
     if request.method == 'POST':
         nome_tarefa = request.form.get('nome_tarefa')
@@ -122,6 +134,7 @@ def adicionar_tarefa():
 
 
 @app.route("/tarefa/edi/<int:id_tarefa>", methods=['POST'])
+@login_required
 def editar_tarefa(id_tarefa):
     novo_nome_tarefa       = request.form.get('nome')
     nova_prioridade_tarefa = int(request.form.get('prioridade'))
@@ -142,6 +155,7 @@ def editar_tarefa(id_tarefa):
 
 
 @app.route("/tarefa/del/<int:id_tarefa>", methods=['POST'])
+@login_required
 def deletar_tarefa(id_tarefa):
     tarefa     = Tarefa.query.filter_by(id=id_tarefa).first()
     if tarefa.id_usuario == session.get('id_usuario'):
@@ -152,6 +166,7 @@ def deletar_tarefa(id_tarefa):
 
 
 @app.route('/tarefa/concluir/<int:id_tarefa>', methods=['GET'])
+@login_required
 def concluir(id_tarefa):
     tarefa = Tarefa.query.get_or_404(id_tarefa)
     if tarefa.id_usuario == session.get('id_usuario'):
@@ -165,8 +180,12 @@ def concluir(id_tarefa):
 
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
-    id_usuario = session['id_usuario']
+    id_usuario = session.get('id_usuario')
+    if not id_usuario:
+        return redirect(url_for('login'))
+        
     usuario    = Usuario.query.filter_by(id=id_usuario).first()
     if usuario.adm:
         list_usuarios = Usuario.query.all()
