@@ -47,7 +47,7 @@
                         <td>
                             <div class="d-flex justify-content-center">
                                 <input class="form-check-input" type="checkbox" {{ 'checked' if tarefa.concluida }}
-                                    onclick="toggleConcluida({{ tarefa.id }})">
+                                    onclick="toggleTarefaConcluida({{ tarefa.id }})">
                             </div>
                         </td>
 
@@ -64,11 +64,11 @@
                         <td>
                             <div class="btn-group">
                                 <button class="btn btn-sm btn-outline-secondary"
-                                    onclick="prepararEdit({{ tarefa.id }}, '{{ tarefa.nome_tarefa }}', {{ tarefa.prioridade_tarefa }})"
+                                    onclick="prepararEditTarefa('{{ tarefa.id }}', '{{ tarefa.nome_tarefa }}', '{{ tarefa.prioridade_tarefa }}')"
                                     data-bs-toggle="modal" data-bs-target="#editModal"> Editar
                                 </button>
 
-                                <button class="btn btn-sm btn-outline-danger" onclick="deletarTarefa({{ tarefa.id }})">
+                                <button class="btn btn-sm btn-outline-danger" onclick="deletarTarefa('{{ tarefa.id }}')">
                                     Excluir
                                 </button>
                             </div>
@@ -116,33 +116,5 @@
     </div>
 </div>
 
-<script>
-    function toggleConcluida(tarefaId) {
-        fetch(`/tarefa/concluir/${tarefaId}`, { method: 'GET' })
-            .then(response => {
-                if (response.ok) {
-                    const container = document.getElementById(`tarefa-container-${tarefaId}`);
-                    container.classList.toggle('text-decoration-line-through');
-                    container.classList.toggle('text-muted');
-                }
-            })
-    }
-
-    function deletarTarefa(id) {
-        if (!confirm("Deseja realmente excluir esta tarefa?")) return;
-
-        fetch(`/tarefa/del/${id}`, { method: 'POST' })
-        .then(response => {
-            if (response.ok) {
-                location.reload(); 
-            }
-        });
-    }
-
-    function prepararEdit(id, nome, prio) {
-        document.getElementById('editForm').action = `/tarefa/edi/${id}`;
-        document.getElementById('editNome').value = nome;
-        document.getElementById('editPrio').value = prio;
-    }
-</script>
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 {% endblock %}

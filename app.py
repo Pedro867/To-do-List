@@ -183,8 +183,6 @@ def concluir(id_tarefa):
 @login_required
 def dashboard():
     id_usuario = session.get('id_usuario')
-    if not id_usuario:
-        return redirect(url_for('login'))
         
     usuario    = Usuario.query.filter_by(id=id_usuario).first()
     if usuario.adm:
