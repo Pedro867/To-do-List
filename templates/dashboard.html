@@ -55,9 +55,13 @@
                         </td>
 
                         <td>
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
-                                {% set prioridade = {1 : 'Alta', 2 : 'Média', 3 : 'Baixa'} %}
-                                {{ prioridade[tarefa.prioridade_tarefa] }}
+                            {% set prioridade = {
+                                1 : {'texto': 'Alta' , 'cor': 'bg-danger-subtle text-danger border-danger-subtle'   },
+                                2 : {'texto': 'Média', 'cor': 'bg-warning-subtle text-warning border-warning-subtle'},
+                                3 : {'texto': 'Baixa', 'cor': 'bg-info-subtle text-info border-info-subtle'         }
+                            } %}
+                            <span class="badge {{prioridade[tarefa.prioridade_tarefa].cor   }}">
+                                {{ prioridade[tarefa.prioridade_tarefa].texto }}
                             </span>
                         </td>
 
