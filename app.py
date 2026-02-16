@@ -193,11 +193,13 @@ def dashboard():
         )
     else:
         list_tarefas = Tarefa.query.filter_by(id_usuario=id_usuario).order_by(Tarefa.prioridade_tarefa).all()
+        num_tarefas = [t for t in list_tarefas if not t.concluida]
         return render_template(
             "dashboard.html", 
             nome_usuario = usuario.nome,
             id_usuario   = usuario.id,
-            list_tarefas = list_tarefas
+            list_tarefas = list_tarefas,
+            num_tarefas  = num_tarefas
         )
 
 
