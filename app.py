@@ -157,7 +157,7 @@ def editar_tarefa(id_tarefa):
 @app.route("/tarefa/del/<int:id_tarefa>", methods=['POST'])
 @login_required
 def deletar_tarefa(id_tarefa):
-    tarefa     = Tarefa.query.filter_by(id=id_tarefa).first()
+    tarefa = Tarefa.query.filter_by(id=id_tarefa).first()
     if tarefa.id_usuario == session.get('id_usuario'):
         db.session.delete(tarefa)
         db.session.commit()
@@ -188,18 +188,18 @@ def dashboard():
         list_usuarios = Usuario.query.all()
         return render_template(
             "dashboard_admin.html", 
-            nome_usuario   = usuario.nome,
-            list_usuarios  = list_usuarios
+            nome_usuario  = usuario.nome,
+            list_usuarios = list_usuarios
         )
     else:
         list_tarefas = Tarefa.query.filter_by(id_usuario=id_usuario).order_by(Tarefa.prioridade_tarefa).all()
-        num_tarefas = [t for t in list_tarefas if not t.concluida]
         return render_template(
             "dashboard.html", 
-            nome_usuario = usuario.nome,
-            id_usuario   = usuario.id,
-            list_tarefas = list_tarefas,
-            num_tarefas  = num_tarefas
+            nome_usuario    = usuario.nome,
+            id_usuario      = usuario.id,
+            list_tarefas    = list_tarefas,
+            dict_prioridade = Tarefa.contar_por_prioridade(id_usuario),
+            num_tarefas     = [t for t in list_tarefas if not t.concluida]
         )
 
 

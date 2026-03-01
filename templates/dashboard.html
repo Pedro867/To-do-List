@@ -89,7 +89,7 @@
             </table>
         </div>
 
-        <div class="mt-3">
+        <div class="mt-5">
             <canvas id="grafico_prioridade"></canvas>
         </div>
 
@@ -104,7 +104,7 @@
                 labels: ['Baixa Prioridade', 'Média Prioridade', 'Alta Prioridade'],
                 datasets: [{
                     label: 'Tarefas feitas',
-                    data: [12, 19, 3],
+                    data: [{{ dict_prioridade.get(3, 0) }}, {{ dict_prioridade.get(2, 0) }}, {{ dict_prioridade.get(1, 0) }}],
                     borderWidth: 3,
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.2)',

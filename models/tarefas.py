@@ -1,5 +1,6 @@
-from database import db
-from datetime import datetime, timezone
+from database   import db
+from datetime   import datetime, timezone
+from sqlalchemy import func
 
 class Tarefa(db.Model):
     __tablename__ = 'tarefas'
@@ -13,3 +14,19 @@ class Tarefa(db.Model):
 
     def __repr__(self):
         return f'<Tarefa {self.nome_tarefa}>'
+    
+    @classmethod
+    def contar_por_prioridade(cls, id_usuario):
+        """ Retorna um dicionário {prioridade: quantidade} para o usuário """
+        resultados = cls.query.with_entities(
+            cls.prioridade_tarefa, 
+            func.count(cls.id)
+        ).filter_by(
+            id_usuario=id_usuario, 
+            concluida=True
+        ).group_by(
+            cls.prioridade_tarefa
+        ).order_by(
+            cls.prioridade_tarefa.asc()
+        ).all()
+        return dict(resultados)
