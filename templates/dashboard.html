@@ -119,11 +119,23 @@
                 }],
             },
             options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+                plugins: {
+                    legend: {
+                        display: true, // Mantemos a legenda ativa
+                        labels: {
+                            boxWidth: 0, // Remove o quadrado colorido
+                            padding: 20, // Espaçamento opcional para o título
+                            font: {
+                                size: 20     // Ajuste o tamanho se quiser destaque
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            }
             }
         });
         </script>
