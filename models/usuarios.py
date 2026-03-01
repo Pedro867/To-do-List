@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class Usuario(db.Model):
     __tablename__ = 'usuarios' # Nome da tabela no Postgres
+    __table_args__ = {'schema': 'public'}
 
     
     id         = db.Column(db.Integer, primary_key=True)
