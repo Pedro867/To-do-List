@@ -46,16 +46,20 @@ def login():
         usuario = Usuario.query.filter_by(email=email).first()
 
         if not usuario:
-            return {
-                'status': 'erro',
-                'msg'   : 'E-mail não cadastrado.'
-            }, 401
+            return render_template(
+                "login.html",
+                msg   = 'Usuário não encontrado.',
+                email = email,
+                senha = senha
+            )
 
         if not usuario.check_senha(senha):
-            return {
-                'status': 'erro',
-                'msg'   : 'Senha incorreta.'
-            }, 401
+            return render_template(
+                "login.html",
+                msg   = 'Usuário ou senha incorretos.',
+                email = email,
+                senha = senha
+            )
 
         session['id_usuario']   = usuario.id
         session['nome_usuario'] = usuario.nome

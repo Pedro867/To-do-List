@@ -8,16 +8,28 @@
         <div class="card shadow-sm">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">Entrar</h2>
-                
+
+                {% if msg %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+
                 <form action="/login" method="POST">
                     <div class="mb-3">
                         <label for="email" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="nome@exemplo.com" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="nome@exemplo.com" value="{{ email if email else '' }}" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="senha" class="form-label">Senha</label>
-                        <input type="password" class="form-control" id="senha" name="senha" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="senha" name="senha" value="{{ senha if senha else '' }}" required>
+                            <button class="btn btn-outline-secondary" type="button" id="btn-senha">
+                                <i class="bi bi-eye" id="icone-olho"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- <div class="mb-3 form-check">
@@ -37,4 +49,16 @@
         </div>
     </div>
 </div>
+<script>
+    const btnSenha   = document.querySelector('#btn-senha');
+    const inputSenha = document.querySelector('#senha');
+    const iconeOlho  = document.querySelector('#icone-olho');
+
+    btnSenha.addEventListener('click', () => {
+        const type = inputSenha.getAttribute('type') === 'password' ? 'text' : 'password';
+        inputSenha.setAttribute('type', type);
+        iconeOlho.classList.toggle('bi-eye');
+        iconeOlho.classList.toggle('bi-eye-slash');
+    });
+</script>
 {% endblock %}
