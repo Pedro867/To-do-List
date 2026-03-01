@@ -41,22 +41,22 @@ def login():
         email = request.form.get('email')
         senha = request.form.get('senha')
         usuario = Usuario.query.filter_by(email=email).first()
-        
+
         if not usuario:
             return {
                 'status': 'erro',
-                'msg'   : 'E-mail não cadastrado.' 
+                'msg'   : 'E-mail não cadastrado.'
             }, 401
-        
+
         if not usuario.check_senha(senha):
             return {
                 'status': 'erro',
-                'msg'   : 'Senha incorreta.' 
+                'msg'   : 'Senha incorreta.'
             }, 401
-        
+
         session['id_usuario']   = usuario.id
         session['nome_usuario'] = usuario.nome
-        
+
         return redirect(url_for('dashboard'))
     else:
         return render_template("login.html")
@@ -73,28 +73,28 @@ def register():
         if not nome:
             return {
                 'status': 'erro',
-                'msg'   : 'O nome está vazio.' 
+                'msg'   : 'O nome está vazio.'
             }, 400
-        
+
         if not email:
             return {
                 'status': 'erro',
-                'msg'   : 'O e-mail está vazio.' 
+                'msg'   : 'O e-mail está vazio.'
             }, 400
-        
+
         if senha != confirma_senha:
             return {
                 'status': 'erro',
-                'msg'   : 'As senhas não coincidem.' 
+                'msg'   : 'As senhas não coincidem.'
             }, 400
-        
+
         usuario_existe = Usuario.query.filter_by(email=email).first()
         if usuario_existe:
             return {
                 'status': 'erro',
-                'msg'   : 'Esse e-mail já está cadastrado.' 
+                'msg'   : 'Esse e-mail já está cadastrado.'
             }, 400
-        
+
         novo_usuario = Usuario(nome=nome, email=email, adm=False)
         novo_usuario.set_senha(senha)
 
@@ -106,9 +106,9 @@ def register():
             db.session.rollback()
             return {
                 'status': 'erro',
-                'msg'   : f'Erro ao salvar: {e}.' 
+                'msg'   : f'Erro ao salvar: {e}.'
             }, 500
-                
+
     else:
         return render_template("register.html")
 
@@ -129,7 +129,7 @@ def adicionar_tarefa():
             nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=2)
             db.session.add(nova_tarefa)
             db.session.commit()
-    
+
     return redirect(url_for('dashboard'))
 
 
@@ -150,7 +150,7 @@ def editar_tarefa(id_tarefa):
         tarefa.nome_tarefa       = novo_nome_tarefa
         tarefa.prioridade_tarefa = nova_prioridade_tarefa
         db.session.commit()
-    
+
     return redirect(url_for('dashboard'))
 
 
@@ -161,7 +161,7 @@ def deletar_tarefa(id_tarefa):
     if tarefa.id_usuario == session.get('id_usuario'):
         db.session.delete(tarefa)
         db.session.commit()
-    
+
     return redirect(url_for('dashboard'))
 
 
@@ -187,14 +187,14 @@ def dashboard():
     if usuario.adm:
         list_usuarios = Usuario.query.all()
         return render_template(
-            "dashboard_admin.html", 
+            "dashboard_admin.html",
             nome_usuario  = usuario.nome,
             list_usuarios = list_usuarios
         )
     else:
         list_tarefas = Tarefa.query.filter_by(id_usuario=id_usuario).order_by(Tarefa.prioridade_tarefa).all()
         return render_template(
-            "dashboard.html", 
+            "dashboard.html",
             nome_usuario    = usuario.nome,
             id_usuario      = usuario.id,
             list_tarefas    = list_tarefas,
@@ -213,13 +213,13 @@ def perfil():
 def editar_perfil():
     novo_nome  = request.form.get('nome_usuario')
     nova_senha = request.form.get('senha')
-    usuario    = Usuario.query.get(session['id_usuario'])   
+    usuario    = Usuario.query.get(session['id_usuario'])
 
     if novo_nome:
         usuario.nome = novo_nome
         session['nome_usuario'] = novo_nome
     if nova_senha:
-        usuario.senha = Usuario.set_senha(nova_senha)   
+        usuario.senha = Usuario.set_senha(nova_senha)
     db.session.commit()
 
     return render_template('perfil.html', nome_usuario = session['nome_usuario'])
