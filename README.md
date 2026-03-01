@@ -12,7 +12,7 @@ Este projeto foi desenvolvido para demonstrar habilidades em Desenvolvimento Web
 
 ## 💻 Tecnologias Utilizadas
 - Backend: Python + Flask
-- ORM: SQLAlchemy
+- ORM: SQLAlchemy do Flask
 - Banco de Dados: PostgreSQL
 - Frontend: Bootstrap 5, HTML5, JavaScript (ES6+)
 - Segurança: Werkzeug (Password Hashing), Flask-Session
