@@ -78,29 +78,37 @@ def register():
         confirma_senha = request.form.get('confirmar_senha')
 
         if not nome:
-            return {
-                'status': 'erro',
-                'msg'   : 'O nome está vazio.'
-            }, 400
+            return render_template(
+                'register.html',
+                msg   = 'O nome está vazio.',
+                email = email,
+                senha = senha
+            )
 
         if not email:
-            return {
-                'status': 'erro',
-                'msg'   : 'O e-mail está vazio.'
-            }, 400
+            return render_template(
+                'register.html',
+                msg   = 'O e-mail está vazio.',
+                email = email,
+                senha = senha
+            )
 
         if senha != confirma_senha:
-            return {
-                'status': 'erro',
-                'msg'   : 'As senhas não coincidem.'
-            }, 400
+            return render_template(
+                'register.html',
+                msg   = 'As senhas não coincidem.',
+                email = email,
+                senha = senha
+            )
 
         usuario_existe = Usuario.query.filter_by(email=email).first()
         if usuario_existe:
-            return {
-                'status': 'erro',
-                'msg'   : 'Esse e-mail já está cadastrado.'
-            }, 400
+            return render_template(
+                'register.html',
+                msg   = 'E-mail já cadastrado.',
+                email = email,
+                senha = senha
+            )
 
         novo_usuario = Usuario(nome=nome, email=email, adm=False)
         novo_usuario.set_senha(senha)
