@@ -89,9 +89,15 @@
             </table>
         </div>
 
-        <div class="mt-5">
-            <canvas id="grafico_prioridade"></canvas>
-        </div>
+        {% if dict_prioridade.values()|sum > 0 %}
+            <div class="mt-5" id="grafico_tarefas_feitas">
+                <canvas id="grafico_prioridade"></canvas>
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-5 text-center">
+                Nenhuma tarefa concluída ainda. Continue trabalhando!
+            </div>
+        {% endif %}
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -121,19 +127,23 @@
             options: {
                 plugins: {
                     legend: {
-                        display: true, // Mantemos a legenda ativa
+                        display: true,
                         labels: {
-                            boxWidth: 0, // Remove o quadrado colorido
-                            padding: 20, // Espaçamento opcional para o título
+                            boxWidth: 0,
+                            padding: 20,
                             font: {
-                                size: 20     // Ajuste o tamanho se quiser destaque
+                                size: 20
                             }
                         }
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            stepSize: 1
+                        }
                     }
                 }
             }
