@@ -5,7 +5,7 @@ from sqlalchemy import func
 class Tarefa(db.Model):
     __tablename__ = 'tarefas'
     __table_args__ = {'schema': 'public'}
-    
+
     id                = db.Column(db.Integer, primary_key=True)
     id_usuario        = db.Column(db.Integer, db.ForeignKey('public.usuarios.id'), nullable=False)
     nome_tarefa       = db.Column(db.String(120), nullable=False)
@@ -15,15 +15,15 @@ class Tarefa(db.Model):
 
     def __repr__(self):
         return f'<Tarefa {self.nome_tarefa}>'
-    
+
     @classmethod
     def contar_por_prioridade(cls, id_usuario):
         """ Retorna um dicionário {prioridade: quantidade} para o usuário """
         resultados = cls.query.with_entities(
-            cls.prioridade_tarefa, 
+            cls.prioridade_tarefa,
             func.count(cls.id)
         ).filter_by(
-            id_usuario=id_usuario, 
+            id_usuario=id_usuario,
             concluida=True
         ).group_by(
             cls.prioridade_tarefa
