@@ -14,6 +14,15 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def valida_email(email):
+    from email_validator import validate_email, EmailNotValidError
+    try:
+        email_dados = validate_email(email)
+        email = email_dados.normalized
+    except EmailNotValidError as e:
+        return str(e)
+    return None
+
 load_dotenv() # Carrega variáveis do .env
 
 app = Flask(__name__, static_folder='static')
@@ -90,6 +99,9 @@ def register():
         erro = 'A senha deve ter no mínimo 6 caracteres.'
     elif Usuario.query.filter_by(email=email).first():
         erro = 'E-mail já cadastrado.'
+
+    if valida_email(email):
+        erro = 'Este e-mail é inválido ou o domínio não existe.'
 
     if erro:
         return render_template('register.html', msg=erro, email=email, senha=senha)
