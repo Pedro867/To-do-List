@@ -1,19 +1,17 @@
 {% extends "base.html" %}
-
-{% block title %}Área Logada{% endblock %}
-
+{% block title %}To do List{% endblock %}
 {% block header %}
     <nav class="navbar navbar-expand-lg navbar-dark custom-navbar mb-5">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/dashboard">
                 <span class="me-2">✅</span> To-do List
             </a>
-            
+
             <div class="d-flex align-items-center">
                 <span class="navbar-text text-white me-3 user-greeting">
                     Olá, <span class="fw-bold text-info">{{ nome_usuario.split()[0] if nome_usuario else "Visitante" }}</span>
                 </span>
-                    
+
                 <a href="/perfil" class="profile-icon-btn" title="Configurações de Perfil">
                     <div class="profile-avatar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -26,9 +24,4 @@
         </div>
     </nav>
 {% endblock %}
-
-{% block content %}
-
-    <h1>Olá</h1>
-
-{% endblock %}
+{% block content %}{% endblock %}

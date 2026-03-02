@@ -1,6 +1,4 @@
 {% extends "base_logado.html" %}
-
-
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -18,13 +16,13 @@
 
                 <div class="card-body p-4">
                     <h5 class="mb-4">Configurações da Conta</h5>
-                    
+
                     <form action="/perfil/editar_perfil" method="POST">
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Nome Completo</label>
                             <input type="text" class="form-control" name="nome_usuario" value="{{ nome_usuario }}">
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Nova Senha</label>
                             <input type="password" class="form-control" name="senha" placeholder="Deixe em branco para manter a atual">
