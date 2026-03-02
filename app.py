@@ -71,69 +71,41 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        nome           = request.form.get('nome')
-        email          = request.form.get('email')
-        senha          = request.form.get('senha')
-        confirma_senha = request.form.get('confirmar_senha')
+    if request.method == 'GET':
+        return render_template("register.html")
 
-        if not nome:
-            return render_template(
-                'register.html',
-                msg   = 'O nome está vazio.',
-                email = email,
-                senha = senha
-            )
+    nome           = request.form.get('nome')
+    email          = request.form.get('email')
+    senha          = request.form.get('senha')
+    confirma_senha = request.form.get('confirmar_senha')
+    erro           = None
 
-        if not email:
-            return render_template(
-                'register.html',
-                msg   = 'O e-mail está vazio.',
-                email = email,
-                senha = senha
-            )
+    if not nome:
+        erro = 'O nome está vazio.'
+    elif not email:
+        erro = 'O e-mail está vazio.'
+    elif senha != confirma_senha:
+        erro = 'As senhas não coincidem.'
+    elif len(senha) < 6:
+        erro = 'A senha deve ter no mínimo 6 caracteres.'
+    elif Usuario.query.filter_by(email=email).first():
+        erro = 'E-mail já cadastrado.'
 
-        if senha != confirma_senha:
-            return render_template(
-                'register.html',
-                msg   = 'As senhas não coincidem.',
-                email = email,
-                senha = senha
-            )
+    if erro:
+        return render_template('register.html', msg=erro, email=email, senha=senha)
 
-        if len(senha) < 6:
-            return render_template(
-                'register.html',
-                msg   = 'A senha deve ter no mínimo 6 caracteres.',
-                email = email,
-                senha = senha
-            )
-
-        usuario_existe = Usuario.query.filter_by(email=email).first()
-        if usuario_existe:
-            return render_template(
-                'register.html',
-                msg   = 'E-mail já cadastrado.',
-                email = email,
-                senha = senha
-            )
-
+    try:
         novo_usuario = Usuario(nome=nome, email=email, adm=False)
         novo_usuario.set_senha(senha)
-
-        try:
-            db.session.add(novo_usuario)
-            db.session.commit()
-            return redirect(url_for('login'))
-        except Exception as e:
-            db.session.rollback()
-            return {
-                'status': 'erro',
-                'msg'   : f'Erro ao salvar: {e}.'
-            }, 500
-
-    else:
-        return render_template("register.html")
+        db.session.add(novo_usuario)
+        db.session.commit()
+        return redirect(url_for('login'))
+    except Exception as e:
+        db.session.rollback()
+        return {
+            'status': 'erro',
+            'msg'   : f'Erro ao salvar: {e}.'
+        }, 500
 
 
 @app.route("/logout")
