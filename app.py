@@ -101,6 +101,14 @@ def register():
                 senha = senha
             )
 
+        if len(senha) < 6:
+            return render_template(
+                'register.html',
+                msg   = 'A senha deve ter no mínimo 6 caracteres.',
+                email = email,
+                senha = senha
+            )
+
         usuario_existe = Usuario.query.filter_by(email=email).first()
         if usuario_existe:
             return render_template(

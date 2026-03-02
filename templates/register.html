@@ -31,7 +31,7 @@
                     <div class="mb-3">
                         <label for="senha" class="form-label">Senha</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="senha" name="senha" value="{{ senha if senha else '' }}" required>
+                            <input type="password" class="form-control" id="senha" name="senha" value="{{ senha if senha else '' }}" minlength="6" required>
                             <button class="btn btn-outline-secondary" type="button" id="btn-senha">
                                 <i class="bi bi-eye" id="icone-olho"></i>
                             </button>
@@ -42,7 +42,7 @@
                     <div class="mb-3">
                         <label for="confirmar_senha" class="form-label">Confirmar Senha</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" required>
+                            <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" minlength="6" required>
                             <button class="btn btn-outline-secondary" type="button" id="btn-senha-confirmar">
                                 <i class="bi bi-eye" id="icone-olho"></i>
                             </button>
