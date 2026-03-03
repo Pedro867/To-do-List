@@ -14,15 +14,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def valida_email(email):
-    from email_validator import validate_email, EmailNotValidError
-    try:
-        email_dados = validate_email(email)
-        email = email_dados.normalized
-    except EmailNotValidError as e:
-        return str(e)
-    return None
-
 load_dotenv() # Carrega variáveis do .env
 
 app = Flask(__name__, static_folder='static')
@@ -100,6 +91,7 @@ def register():
     elif Usuario.query.filter_by(email=email).first():
         erro = 'E-mail já cadastrado.'
 
+    from utils import valida_email
     if valida_email(email):
         erro = 'Este e-mail é inválido ou o domínio não existe.'
 
@@ -220,7 +212,7 @@ def perfil():
 def editar_perfil():
     novo_nome  = request.form.get('nome_usuario')
     nova_senha = request.form.get('senha')
-    usuario    = Usuario.query.get(session['id_usuario'])
+    usuario    = db.session.get(Usuario, session['id_usuario'])
 
     if novo_nome:
         usuario.nome = novo_nome
@@ -228,6 +220,13 @@ def editar_perfil():
     if nova_senha:
         usuario.senha = Usuario.set_senha(nova_senha)
     db.session.commit()
+
+    try:
+        email_usuario = Usuario.query.filter_by(id=session['id_usuario']).first().email
+        from utils import enviar_email
+        enviar_email(session['nome_usuario'], email_usuario)
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
 
     return render_template('perfil.html', nome_usuario = session['nome_usuario'])
 
