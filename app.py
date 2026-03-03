@@ -6,14 +6,6 @@ from models.tarefas import Tarefa
 
 from functools import wraps
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'id_usuario' not in session:
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
-
 load_dotenv() # Carrega variáveis do .env
 
 app = Flask(__name__, static_folder='static')
@@ -31,6 +23,15 @@ db.init_app(app) # Inicializa o BD
 
 with app.app_context():
     db.create_all() # Fabrica as tabelas no banco
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'id_usuario' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route("/")
@@ -206,6 +207,7 @@ def dashboard():
 @login_required
 def perfil():
     return render_template('perfil.html', nome_usuario = session['nome_usuario'])
+
 
 @app.route("/perfil/editar_perfil", methods=['POST'])
 @login_required
