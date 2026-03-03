@@ -206,7 +206,11 @@ def dashboard():
 @app.route("/perfil")
 @login_required
 def perfil():
-    return render_template('perfil.html', nome_usuario = session['nome_usuario'])
+    return render_template(
+        'perfil.html',
+        nome_usuario = session['nome_usuario'],
+        email        = db.session.get(Usuario, session['id_usuario']).email
+    )
 
 
 @app.route("/perfil/editar_perfil", methods=['POST'])
@@ -214,23 +218,49 @@ def perfil():
 def editar_perfil():
     novo_nome  = request.form.get('nome_usuario')
     nova_senha = request.form.get('senha')
+    novo_email = request.form.get('email')
     usuario    = db.session.get(Usuario, session['id_usuario'])
+    msg = ''
 
     if novo_nome:
-        usuario.nome = novo_nome
-        session['nome_usuario'] = novo_nome
+        if novo_nome != usuario.nome:
+            usuario.nome = novo_nome
+            session['nome_usuario'] = novo_nome
+            msg += 'Nome alterado. '
+
     if nova_senha:
-        usuario.senha = Usuario.set_senha(nova_senha)
+        if not usuario.check_senha(nova_senha):
+            usuario.senha = Usuario.set_senha(nova_senha)
+            msg += 'Senha Alterada. '
+
+    if novo_email:
+        if novo_email != usuario.email:
+            if Usuario.query.filter_by(email=novo_email).first():
+                msg = 'E-mail escolhido já foi cadastrado.'
+            else:
+                usuario.email = novo_email
+                msg += 'E-mail alterado. '
+
     db.session.commit()
 
-    try:
-        email_usuario = Usuario.query.filter_by(id=session['id_usuario']).first().email
-        from utils import enviar_email
-        enviar_email(session['nome_usuario'], email_usuario)
-    except Exception as e:
-        print(f"Erro ao enviar e-mail: {e}")
+    if msg != '':
+        try:
+            email_usuario = usuario.email
+            from utils import enviar_email
+            enviar_email(session['nome_usuario'], email_usuario)
+        except Exception as e:
+            print(f"Erro ao enviar e-mail: {e}")
 
-    return render_template('perfil.html', nome_usuario = session['nome_usuario'])
+        msg += "Um e-mail foi enviado para você."
+    else:
+        msg = None
+
+    return render_template(
+        'perfil.html',
+        nome_usuario = session['nome_usuario'],
+        email        = usuario.email,
+        msg          = msg
+    )
 
 
 if __name__ == '__main__':

@@ -15,6 +15,13 @@
                     <h4 class="text-white mb-0">{{ nome_usuario if nome_usuario else "Usuário" }}</h4>
                 </div>
 
+                {% if msg %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+
                 <div class="card-body p-4">
                     <h5 class="mb-4">Configurações da Conta</h5>
 
@@ -25,9 +32,19 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-muted small fw-bold">Nova Senha</label>
-                            <input type="password" class="form-control" name="senha" placeholder="Deixe em branco para manter a atual">
+                            <label class="form-label text-muted small fw-bold">E-mail</label>
+                            <input type="text" class="form-control" name="email" value="{{ email }}">
                         </div>
+
+                        <div class="mb-3">
+                        <label for="senha" class="form-label text-muted small fw-bold">Senha</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Deixe em branco para manter a atual">
+                            <button class="btn btn-outline-secondary" type="button" id="btn-senha">
+                                <i class="bi bi-eye" id="icone-olho"></i>
+                            </button>
+                        </div>
+                    </div>
 
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary shadow-sm" style="border-radius: 10px;">Salvar Alterações</button>
@@ -42,4 +59,16 @@
         </div>
     </div>
 </div>
+<script>
+    const btnSenha   = document.querySelector('#btn-senha');
+    const inputSenha = document.querySelector('#senha');
+    const iconeOlho  = document.querySelector('#icone-olho');
+
+    btnSenha.addEventListener('click', () => {
+        const type = inputSenha.getAttribute('type') === 'password' ? 'text' : 'password';
+        inputSenha.setAttribute('type', type);
+        iconeOlho.classList.toggle('bi-eye');
+        iconeOlho.classList.toggle('bi-eye-slash');
+    });
+</script>
 {% endblock %}
