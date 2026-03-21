@@ -1,4 +1,4 @@
-# [To-do-List]
+# To-do List
 
 ## 📌 Sobre o Projeto
 Este projeto foi desenvolvido para demonstrar habilidades em Desenvolvimento Web Full Stack, utilizando Python no backend e práticas modernas de manipulação de banco de dados relacional. A aplicação permite que usuários gerenciem suas rotinas através de um sistema de prioridades, com uma interface limpa.
@@ -42,7 +42,7 @@ A aplicação está oficialmente hospedada na **[Render](https://render.com/)**.
 ## 🚀 Como Executar o Projeto
 1. Clone o repositório:
 > ```bash
-> git clone https://github.com/seu-usuario/seu-repositorio.git
+> git clone https://github.com/Pedro867/To-do-List.git
 > cd seu-repositorio
 > Crie e ative um ambiente virtual:
 > ```
