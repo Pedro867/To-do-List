@@ -12,7 +12,7 @@ window.toggleTarefaConcluida =  function (tarefaId) {
 window.deletarTarefa = function (id) {
     if (!confirm("Deseja realmente excluir esta tarefa?")) return;
 
-    fetch(`/tarefa/del/${id}`, { method: 'POST' })
+    fetch(`/tarefa/${id}`, { method: 'DELETE' })
         .then(response => {
             if (response.ok) {
                 location.reload();

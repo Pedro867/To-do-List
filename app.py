@@ -154,7 +154,7 @@ def editar_tarefa(id_tarefa):
     return redirect(url_for('dashboard'))
 
 
-@app.route("/tarefa/del/<int:id_tarefa>", methods=['POST'])
+@app.route("/tarefa/<int:id_tarefa>", methods=['DELETE'])
 @login_required
 def deletar_tarefa(id_tarefa):
     tarefa = Tarefa.query.filter_by(id=id_tarefa).first()
