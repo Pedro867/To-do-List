@@ -1,6 +1,8 @@
 import smtplib
 from email.message import EmailMessage
+from functools import wraps
 import os
+from flask import redirect, url_for, session
 
 def enviar_email(nome_usuario, email_destino):
     EMAIL_ORIGEM = os.getenv('EMAIL_ORIGEM')
@@ -37,3 +39,11 @@ def valida_email(email):
     except EmailNotValidError as e:
         return str(e)
     return None
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'id_usuario' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function

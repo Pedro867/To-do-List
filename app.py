@@ -2,9 +2,8 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from dotenv import load_dotenv
 from models.usuarios import Usuario
-from models.tarefas import Tarefa
-
-from functools import wraps
+from models.usuarios import Tarefa
+from utils.func import login_required
 
 load_dotenv() # Carrega variáveis do .env
 
@@ -24,14 +23,8 @@ db.init_app(app) # Inicializa o BD
 with app.app_context():
     db.create_all() # Fabrica as tabelas no banco
 
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'id_usuario' not in session:
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
+from routes.tarefa_routes import tarefa_blueprint
+app.register_blueprint(tarefa_blueprint)
 
 
 @app.route("/")
@@ -117,66 +110,6 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
-
-@app.route("/tarefa/add", methods=['POST'])
-@login_required
-def adicionar_tarefa():
-    if request.method == 'POST':
-        nome_tarefa = request.form.get('nome_tarefa')
-        id_usuario  = session['id_usuario']
-        if nome_tarefa and id_usuario:
-            nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=2)
-            db.session.add(nova_tarefa)
-            db.session.commit()
-
-    return redirect(url_for('dashboard'))
-
-
-@app.route("/tarefa/edi/<int:id_tarefa>", methods=['POST'])
-@login_required
-def editar_tarefa(id_tarefa):
-    novo_nome_tarefa       = request.form.get('nome')
-    nova_prioridade_tarefa = int(request.form.get('prioridade'))
-    tarefa                 = Tarefa.select_one_tarefa(id_tarefa)
-
-    if not novo_nome_tarefa or not nova_prioridade_tarefa:
-        return {
-            'status': 'erro',
-            'msg'   : 'Dados da tarefa não foram recebidos'
-        }, 400
-
-    if tarefa.id_usuario == session.get('id_usuario'):
-        tarefa.nome_tarefa       = novo_nome_tarefa
-        tarefa.prioridade_tarefa = nova_prioridade_tarefa
-        db.session.commit()
-
-    return redirect(url_for('dashboard'))
-
-
-@app.route("/tarefa/<int:id_tarefa>", methods=['DELETE'])
-@login_required
-def deletar_tarefa(id_tarefa):
-    tarefa = Tarefa.select_one_tarefa(id_tarefa)
-    if tarefa.id_usuario == session.get('id_usuario'):
-        db.session.delete(tarefa)
-        db.session.commit()
-
-    return redirect(url_for('dashboard'))
-
-
-@app.route('/tarefa/concluir/<int:id_tarefa>', methods=['GET'])
-@login_required
-def concluir(id_tarefa):
-    tarefa = Tarefa.select_one_tarefa(id_tarefa)
-    if tarefa.id_usuario == session.get('id_usuario'):
-        tarefa.concluida = not tarefa.concluida
-        db.session.commit()
-        return '', 204
-    return {
-        'status': 'erro',
-        'msg'   : 'Acesso não autorizado.'
-    }, 403
 
 
 @app.route("/dashboard")
