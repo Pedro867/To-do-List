@@ -5,7 +5,7 @@ from utils.database import db
 
 tarefa_blueprint = Blueprint('tarefa', __name__)
 
-@tarefa_blueprint.route("/tarefa/add", methods=['POST'])
+@tarefa_blueprint.route("/tarefa", methods=['POST'])
 @login_required
 def adicionar_tarefa():
     if request.method == 'POST':
@@ -19,7 +19,7 @@ def adicionar_tarefa():
     return redirect(url_for('dashboard'))
 
 
-@tarefa_blueprint.route("/tarefa/edi/<int:id_tarefa>", methods=['POST'])
+@tarefa_blueprint.route("/tarefa/<int:id_tarefa>", methods=['PUT'])
 @login_required
 def editar_tarefa(id_tarefa):
     novo_nome_tarefa       = request.form.get('nome')
@@ -37,7 +37,10 @@ def editar_tarefa(id_tarefa):
         tarefa.prioridade_tarefa = nova_prioridade_tarefa
         db.session.commit()
 
-    return redirect(url_for('dashboard'))
+    return {
+        "status": "sucesso",
+        "url"   : url_for('dashboard')
+    }, 200
 
 
 @tarefa_blueprint.route("/tarefa/<int:id_tarefa>", methods=['DELETE'])
