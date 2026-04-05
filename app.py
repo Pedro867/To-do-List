@@ -18,7 +18,7 @@ if uri and uri.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-from database import db
+from utils.database import db
 db.init_app(app) # Inicializa o BD
 
 with app.app_context():
@@ -92,7 +92,7 @@ def register():
     elif Usuario.query.filter_by(email=email).first():
         erro = 'E-mail já cadastrado.'
 
-    from utils import valida_email
+    from utils.func import valida_email
     if valida_email(email):
         erro = 'Este e-mail é inválido ou o domínio não existe.'
 
@@ -246,7 +246,7 @@ def editar_perfil():
     if msg != '':
         try:
             email_usuario = usuario.email
-            from utils import enviar_email
+            from utils.func import enviar_email
             enviar_email(session['nome_usuario'], email_usuario)
         except Exception as e:
             print(f"Erro ao enviar e-mail: {e}")
