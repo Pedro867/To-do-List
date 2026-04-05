@@ -9,12 +9,11 @@ tarefa_blueprint = Blueprint('tarefa', __name__)
 @login_required
 def adicionar_tarefa():
     if request.method == 'POST':
-        nome_tarefa = request.form.get('nome_tarefa')
-        id_usuario  = session['id_usuario']
-        if nome_tarefa and id_usuario:
-            nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=2)
-            db.session.add(nova_tarefa)
-            db.session.commit()
+        nome_tarefa       = request.form.get('nome_tarefa')
+        prioridade_tarefa = int(request.form.get('prioridade_tarefa'))
+        id_usuario        = session['id_usuario']
+        if nome_tarefa and prioridade_tarefa and id_usuario:
+            Tarefa.insert_tarefa(id_usuario, nome_tarefa, prioridade_tarefa)
 
     return redirect(url_for('dashboard'))
 

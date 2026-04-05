@@ -44,3 +44,20 @@ class Tarefa(db.Model):
     def select_one_tarefa(id_tarefa: int) -> Tarefa:
         tarefa = Tarefa.query.get(id_tarefa)
         return tarefa
+
+    @staticmethod
+    def insert_tarefa(
+        id_usuario       : int,
+        nome_tarefa      : str,
+        prioridade_tarefa: int
+    ):
+        try:
+            nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=prioridade_tarefa)
+            db.session.add(nova_tarefa)
+            db.session.commit()
+            return True, nova_tarefa
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"Erro ao inserir tarefa: {e}")
+            return False, "Erro interno no banco de dados"

@@ -19,10 +19,22 @@
 
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <form action="/tarefa" method="POST" class="d-flex gap-2">
-                    <input type="text" name="nome_tarefa" class="form-control" placeholder="O que precisa ser feito?"
-                        required>
-                    <button type="submit" class="btn btn-primary px-4">Adicionar</button>
+                <form action="/tarefa" method="POST" class="d-flex align-items-center gap-2">
+                    <div class="form-floating flex-grow-1">
+                        <input type="text" name="nome_tarefa" class="form-control" id="nome_tarefa" placeholder="Nome" required>
+                        <label for="nome_tarefa">Nome da Tarefa</label>
+                    </div>
+
+                    <div class="form-floating" style="min-width: 150px;">
+                        <select class="form-select" name="prioridade_tarefa" id="prioridade_tarefa">
+                            <option value="1" class="text-danger">Alta</option>
+                            <option value="2" class="text-warning" selected>Média</option>
+                            <option value="3" class="text-success">Baixa</option>
+                        </select>
+                        <label for="prioridade_tarefa">Prioridade</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary py-3 px-4">Adicionar</button>
                 </form>
             </div>
         </div>
