@@ -185,7 +185,7 @@ def dashboard():
     id_usuario = session.get('id_usuario')
     usuario    = Usuario.query.filter_by(id=id_usuario).first()
     if usuario.adm:
-        list_usuarios = Usuario.query.all()
+        list_usuarios = Usuario.query.filter_by(adm=False).all()
         return render_template(
             "dashboard_admin.html",
             nome_usuario  = usuario.nome,
