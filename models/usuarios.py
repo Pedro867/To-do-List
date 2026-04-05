@@ -34,10 +34,11 @@ class Usuario(db.Model):
                     .all()
         return list_users
 
+    @staticmethod
     def select_one_user(
         id_usuario: int = None,
         email     : str = None
-    ) -> dict | None:
+    ) -> Usuario:
         query = Usuario.query
 
         if id_usuario:

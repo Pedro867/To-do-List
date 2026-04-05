@@ -138,7 +138,7 @@ def adicionar_tarefa():
 def editar_tarefa(id_tarefa):
     novo_nome_tarefa       = request.form.get('nome')
     nova_prioridade_tarefa = int(request.form.get('prioridade'))
-    tarefa                 = Tarefa.query.filter_by(id=id_tarefa).first()
+    tarefa                 = Tarefa.select_one_tarefa(id_tarefa)
 
     if not novo_nome_tarefa or not nova_prioridade_tarefa:
         return {
@@ -157,7 +157,7 @@ def editar_tarefa(id_tarefa):
 @app.route("/tarefa/<int:id_tarefa>", methods=['DELETE'])
 @login_required
 def deletar_tarefa(id_tarefa):
-    tarefa = Tarefa.query.filter_by(id=id_tarefa).first()
+    tarefa = Tarefa.select_one_tarefa(id_tarefa)
     if tarefa.id_usuario == session.get('id_usuario'):
         db.session.delete(tarefa)
         db.session.commit()
@@ -168,7 +168,7 @@ def deletar_tarefa(id_tarefa):
 @app.route('/tarefa/concluir/<int:id_tarefa>', methods=['GET'])
 @login_required
 def concluir(id_tarefa):
-    tarefa = Tarefa.query.get_or_404(id_tarefa)
+    tarefa = Tarefa.select_one_tarefa(id_tarefa)
     if tarefa.id_usuario == session.get('id_usuario'):
         tarefa.concluida = not tarefa.concluida
         db.session.commit()
@@ -192,7 +192,7 @@ def dashboard():
             list_usuarios = list_usuarios
         )
     else:
-        list_tarefas = Tarefa.query.filter_by(id_usuario=id_usuario).order_by(Tarefa.prioridade_tarefa).all()
+        list_tarefas = Tarefa.select_all_tarefa(id_usuario)
         return render_template(
             "dashboard.html",
             nome_usuario    = usuario.nome,

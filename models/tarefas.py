@@ -31,3 +31,16 @@ class Tarefa(db.Model):
             cls.prioridade_tarefa.asc()
         ).all()
         return dict(resultados)
+
+    @staticmethod
+    def select_all_tarefa(id_usuario: int) -> list:
+        list_tarefas = Tarefa.query\
+                                    .filter_by(id_usuario=id_usuario)\
+                                    .order_by(Tarefa.prioridade_tarefa)\
+                                    .all()
+        return list_tarefas
+
+    @staticmethod
+    def select_one_tarefa(id_tarefa: int) -> Tarefa:
+        tarefa = Tarefa.query.get(id_tarefa)
+        return tarefa
