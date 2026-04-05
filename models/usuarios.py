@@ -1,5 +1,7 @@
 from utils.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import func
+from .tarefas import Tarefa
 
 class Usuario(db.Model):
     __tablename__ = 'usuarios' # Nome da tabela no Postgres
@@ -21,3 +23,28 @@ class Usuario(db.Model):
 
     def check_senha(self, senha):
         return check_password_hash(self.senha_hash, senha)
+
+    @staticmethod
+    def select_all_users(listar_adm: bool = True) -> list:
+        list_users = db.session.query(Usuario)\
+                    .filter_by(adm=listar_adm)\
+                    .outerjoin(Tarefa)\
+                    .group_by(Usuario.id)\
+                    .order_by(func.count(Tarefa.id).desc())\
+                    .all()
+        return list_users
+
+    def select_one_user(
+        id_usuario: int = None,
+        email     : str = None
+    ) -> dict | None:
+        query = Usuario.query
+
+        if id_usuario:
+            query = query.filter(Usuario.id == id_usuario)
+        elif email:
+            query = query.filter(Usuario.email == email)
+        else:
+            return None
+
+        return query.first()

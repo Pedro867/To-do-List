@@ -42,9 +42,9 @@ def index():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        senha = request.form.get('senha')
-        usuario = Usuario.query.filter_by(email=email).first()
+        email   = request.form.get('email')
+        senha   = request.form.get('senha')
+        usuario = Usuario.select_one_user(email=email)
 
         if not usuario:
             return render_template(
@@ -89,7 +89,7 @@ def register():
         erro = 'As senhas não coincidem.'
     elif len(senha) < 6:
         erro = 'A senha deve ter no mínimo 6 caracteres.'
-    elif Usuario.query.filter_by(email=email).first():
+    elif Usuario.select_one_user(email=email):
         erro = 'E-mail já cadastrado.'
 
     from utils.func import valida_email
@@ -183,9 +183,9 @@ def concluir(id_tarefa):
 @login_required
 def dashboard():
     id_usuario = session.get('id_usuario')
-    usuario    = Usuario.query.filter_by(id=id_usuario).first()
+    usuario    = Usuario.select_one_user(id_usuario)
     if usuario.adm:
-        list_usuarios = Usuario.query.filter_by(adm=False).all()
+        list_usuarios = Usuario.select_all_users(listar_adm = False)
         return render_template(
             "dashboard_admin.html",
             nome_usuario  = usuario.nome,
@@ -235,7 +235,7 @@ def editar_perfil():
 
     if novo_email:
         if novo_email != usuario.email:
-            if Usuario.query.filter_by(email=novo_email).first():
+            if Usuario.select_one_user(email=novo_email):
                 msg = 'E-mail escolhido já foi cadastrado.'
             else:
                 usuario.email = novo_email
