@@ -9,15 +9,17 @@ window.toggleTarefaConcluida =  function (tarefaId) {
         })
 }
 
-window.deletarTarefa = function (id) {
+window.deletarTarefa = async function (id) {
     if (!confirm("Deseja realmente excluir esta tarefa?")) return;
 
-    fetch(`/tarefa/${id}`, { method: 'DELETE' })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            }
-        });
+    const response = await fetch(`/tarefa/${id}`, { method: 'DELETE' });
+
+    if (response.ok) {
+        const result = await response.json();
+        window.location.href = result.url;
+    } else {
+        alert("Erro ao editar");
+    }
 }
 
 window.prepararEditTarefa = function (id, nome, prio) {

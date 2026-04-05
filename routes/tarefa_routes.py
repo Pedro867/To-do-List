@@ -37,7 +37,7 @@ def editar_tarefa(id_tarefa):
         db.session.commit()
 
     return {
-        "status": "sucesso",
+        "status": "ok",
         "url"   : url_for('dashboard')
     }, 200
 
@@ -50,7 +50,10 @@ def deletar_tarefa(id_tarefa):
         db.session.delete(tarefa)
         db.session.commit()
 
-    return redirect(url_for('dashboard'))
+    return {
+        "status": "ok",
+        "url"   : url_for('dashboard')
+    }, 200
 
 
 @tarefa_blueprint.route('/tarefa/concluir/<int:id_tarefa>', methods=['GET'])
@@ -61,6 +64,7 @@ def concluir(id_tarefa):
         tarefa.concluida = not tarefa.concluida
         db.session.commit()
         return '', 204
+
     return {
         'status': 'erro',
         'msg'   : 'Acesso não autorizado.'
