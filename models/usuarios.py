@@ -49,3 +49,22 @@ class Usuario(db.Model):
             return None
 
         return query.first()
+
+    @staticmethod
+    def insert_usuario(
+        nome : str,
+        email: str,
+        senha: str
+    ):
+        try:
+            novo_usuario = Usuario(nome=nome, email=email, adm=False)
+            novo_usuario.set_senha(senha)
+            db.session.add(novo_usuario)
+            db.session.commit()
+            return {'status': 'ok'}
+        except Exception as e:
+            db.session.rollback()
+            return {
+                'status': 'erro',
+                'msg'   : f'Erro ao salvar: {e}.'
+            }

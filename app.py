@@ -92,18 +92,11 @@ def register():
     if erro:
         return render_template('register.html', msg=erro, email=email, senha=senha)
 
-    try:
-        novo_usuario = Usuario(nome=nome, email=email, adm=False)
-        novo_usuario.set_senha(senha)
-        db.session.add(novo_usuario)
-        db.session.commit()
+    retorno = Usuario.insert_usuario(nome, email, senha)
+    if retorno['status'] == 'ok':
         return redirect(url_for('login'))
-    except Exception as e:
-        db.session.rollback()
-        return {
-            'status': 'erro',
-            'msg'   : f'Erro ao salvar: {e}.'
-        }, 500
+    else:
+        return retorno, 500
 
 
 @app.route("/logout")
