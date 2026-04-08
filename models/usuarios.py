@@ -26,7 +26,7 @@ class Usuario(db.Model):
 
     @staticmethod
     def select_all_users(listar_adm: bool = True) -> list:
-        list_users = db.session.query(Usuario)\
+        list_users = Usuario.query\
                     .filter_by(adm=listar_adm)\
                     .outerjoin(Tarefa)\
                     .group_by(Usuario.id)\

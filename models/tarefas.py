@@ -35,9 +35,9 @@ class Tarefa(db.Model):
     @staticmethod
     def select_all_tarefa(id_usuario: int) -> list:
         list_tarefas = Tarefa.query\
-                                    .filter_by(id_usuario=id_usuario)\
-                                    .order_by(Tarefa.prioridade_tarefa)\
-                                    .all()
+                        .filter_by(id_usuario=id_usuario)\
+                        .order_by(Tarefa.prioridade_tarefa)\
+                        .all()
         return list_tarefas
 
     @staticmethod
