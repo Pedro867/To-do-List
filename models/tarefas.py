@@ -83,3 +83,14 @@ class Tarefa(db.Model):
             db.session.rollback()
             print(f"Erro ao editar tarefa: {e}")
             return False, "Erro interno no banco de dados"
+
+    @staticmethod
+    def delete_tarefa(id_tarefa: int):
+        try:
+            tarefa = Tarefa.select_one_tarefa(id_tarefa)
+            db.session.delete(tarefa)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Erro ao deletar tarefa: {e}")
+            return False, "Erro interno no banco de dados"

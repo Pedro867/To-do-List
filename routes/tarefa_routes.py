@@ -49,8 +49,7 @@ def editar_tarefa(id_tarefa):
 def deletar_tarefa(id_tarefa):
     tarefa = Tarefa.select_one_tarefa(id_tarefa)
     if tarefa.id_usuario == session.get('id_usuario'):
-        db.session.delete(tarefa)
-        db.session.commit()
+        Tarefa.delete_tarefa(id_tarefa)
 
     return {
         "status": "ok",
