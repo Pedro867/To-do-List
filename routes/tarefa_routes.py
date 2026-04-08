@@ -23,7 +23,6 @@ def adicionar_tarefa():
 def editar_tarefa(id_tarefa):
     novo_nome_tarefa       = request.form.get('nome')
     nova_prioridade_tarefa = int(request.form.get('prioridade'))
-    tarefa                 = Tarefa.select_one_tarefa(id_tarefa)
 
     if not novo_nome_tarefa or not nova_prioridade_tarefa:
         return {
@@ -31,10 +30,13 @@ def editar_tarefa(id_tarefa):
             'msg'   : 'Dados da tarefa não foram recebidos'
         }, 400
 
+    tarefa = Tarefa.select_one_tarefa(id_tarefa)
     if tarefa.id_usuario == session.get('id_usuario'):
-        tarefa.nome_tarefa       = novo_nome_tarefa
-        tarefa.prioridade_tarefa = nova_prioridade_tarefa
-        db.session.commit()
+        Tarefa.update_tarefa(
+            id_tarefa,
+            novo_nome_tarefa,
+            nova_prioridade_tarefa
+        )
 
     return {
         "status": "ok",
@@ -56,13 +58,15 @@ def deletar_tarefa(id_tarefa):
     }, 200
 
 
-@tarefa_blueprint.route('/tarefa/concluir/<int:id_tarefa>', methods=['GET'])
+@tarefa_blueprint.route('/tarefa/concluir_tarefa/<int:id_tarefa>', methods=['PUT'])
 @login_required
-def concluir(id_tarefa):
+def concluir_tarefa(id_tarefa):
     tarefa = Tarefa.select_one_tarefa(id_tarefa)
     if tarefa.id_usuario == session.get('id_usuario'):
-        tarefa.concluida = not tarefa.concluida
-        db.session.commit()
+        Tarefa.update_tarefa(
+            id_tarefa        = id_tarefa,
+            tarefa_concluida = not tarefa.concluida
+        )
         return '', 204
 
     return {

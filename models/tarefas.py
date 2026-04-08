@@ -61,3 +61,25 @@ class Tarefa(db.Model):
             db.session.rollback()
             print(f"Erro ao inserir tarefa: {e}")
             return False, "Erro interno no banco de dados"
+
+    @staticmethod
+    def update_tarefa(
+        id_tarefa        : int,
+        nom_tarefa       : str  = None,
+        prioridade_tarefa: str  = None,
+        tarefa_concluida : bool = None
+    ):
+        try:
+            tarefa = Tarefa.select_one_tarefa(id_tarefa)
+            if nom_tarefa is not None:
+                tarefa.nome_tarefa = nom_tarefa
+            if prioridade_tarefa is not None:
+                tarefa.prioridade_tarefa = prioridade_tarefa
+            if tarefa_concluida is not None:
+                tarefa.concluida = tarefa_concluida
+            db.session.commit()
+            return True, "ok"
+        except Exception as e:
+            db.session.rollback()
+            print(f"Erro ao editar tarefa: {e}")
+            return False, "Erro interno no banco de dados"

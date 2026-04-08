@@ -1,5 +1,5 @@
 window.toggleTarefaConcluida =  function (tarefaId) {
-    fetch(`/tarefa/concluir/${tarefaId}`, { method: 'GET' })
+    fetch(`/tarefa/concluir_tarefa/${tarefaId}`, { method: 'PUT' })
         .then(response => {
             if (response.ok) {
                 const container = document.getElementById(`tarefa-container-${tarefaId}`);
