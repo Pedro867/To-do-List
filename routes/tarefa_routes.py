@@ -39,8 +39,9 @@ def editar_tarefa(id_tarefa):
         )
 
     return {
-        "status": "ok",
-        "url"   : url_for('dashboard')
+        'status': 'ok',
+        'msg'   : 'Tarefa editada com sucesso.',
+        'url'   : url_for('dashboard')
     }, 200
 
 
@@ -52,8 +53,9 @@ def deletar_tarefa(id_tarefa):
         Tarefa.delete_tarefa(id_tarefa)
 
     return {
-        "status": "ok",
-        "url"   : url_for('dashboard')
+        'status': 'ok',
+        'msg'   : 'Tarefa deletada com sucesso.',
+        'url'   : url_for('dashboard')
     }, 200
 
 
