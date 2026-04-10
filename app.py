@@ -111,11 +111,15 @@ def dashboard():
     id_usuario = session.get('id_usuario')
     usuario    = Usuario.select_one_user(id_usuario)
     if usuario.adm:
-        list_usuarios = Usuario.select_all_users(listar_adm = False)
+        retorno = Usuario.select_all_user(listar_adm = False)
+
+        if retorno.get('status') != 'ok':
+            return retorno, 500
+
         return render_template(
             "dashboard_admin.html",
             nome_usuario  = usuario.nome,
-            list_usuarios = list_usuarios
+            list_usuarios = retorno.get('list_usuarios')
         )
     else:
         list_tarefas = Tarefa.select_all_tarefa(id_usuario)

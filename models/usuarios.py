@@ -25,14 +25,25 @@ class Usuario(db.Model):
         return check_password_hash(self.senha_hash, senha)
 
     @staticmethod
-    def select_all_users(listar_adm: bool = True) -> list:
-        list_users = Usuario.query\
-                    .filter_by(adm=listar_adm)\
-                    .outerjoin(Tarefa)\
-                    .group_by(Usuario.id)\
-                    .order_by(func.count(Tarefa.id).desc())\
-                    .all()
-        return list_users
+    def select_all_user(listar_adm: bool = True) -> dict:
+        try:
+            list_users = Usuario.query\
+                        .filter_by  (adm=listar_adm)\
+                        .outerjoin(Tarefa)\
+                        .group_by(Usuario.id)\
+                        .order_by(func.count(Tarefa.id).desc())\
+                        .all()
+            return {
+                'status'       : 'ok',
+                'list_usuarios': list_users
+            }
+        except Exception as e:
+            # Captura erros inesperados (fora do banco)
+            print(f"Erro ao buscar usuários: {e}")
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro interno no banco de dados'
+            }
 
     @staticmethod
     def select_one_user(

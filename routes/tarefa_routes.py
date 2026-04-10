@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, redirect, url_for, request, session
 from models.tarefas import Tarefa
 from utils.func import login_required
-from utils.database import db
 
 tarefa_blueprint = Blueprint('tarefa', __name__)
 
