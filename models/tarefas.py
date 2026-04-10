@@ -103,10 +103,17 @@ class Tarefa(db.Model):
             tarefa = Tarefa.select_one_tarefa(id_tarefa)
             db.session.delete(tarefa)
             db.session.commit()
+            return {
+                'status': 'ok',
+                'msg'   : 'Tarefa deletada com sucesso.'
+            }
         except Exception as e:
             db.session.rollback()
             print(f"Erro ao deletar tarefa: {e}")
-            return False, "Erro interno no banco de dados"
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro interno no banco de dados'
+            }
 
     def usuario_proprietario(self, id_usuario: int | str) -> bool:
         return str(self.id_usuario) == str(id_usuario)

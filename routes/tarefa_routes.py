@@ -59,8 +59,17 @@ def editar_tarefa(id_tarefa):
 @login_required
 def deletar_tarefa(id_tarefa):
     tarefa = Tarefa.select_one_tarefa(id_tarefa)
-    if tarefa.id_usuario == session.get('id_usuario'):
-        Tarefa.delete_tarefa(id_tarefa)
+
+    if not tarefa.usuario_proprietario(session.get('id_usuario')):
+        return {
+            'status': 'erro',
+            'msg'   : 'Essa tarefa não pertence a esse usuário.'
+        }, 401
+
+    retorno = Tarefa.delete_tarefa(id_tarefa)
+
+    if retorno.get('status') != 'ok':
+        return retorno, 500
 
     return {
         'status': 'ok',
