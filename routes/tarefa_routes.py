@@ -66,7 +66,10 @@ def concluir_tarefa(id_tarefa):
             id_tarefa        = id_tarefa,
             tarefa_concluida = not tarefa.concluida
         )
-        return '', 204
+        return {
+            'status': 'ok',
+            'msg'   : 'Status da tarefa atualizado com sucesso.'
+        }, 204
 
     return {
         'status': 'erro',
