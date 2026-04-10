@@ -24,7 +24,9 @@ with app.app_context():
     db.create_all() # Fabrica as tabelas no banco
 
 from routes.tarefa_routes import tarefa_blueprint
+from routes.usuario_routes import usuario_blueprint
 app.register_blueprint(tarefa_blueprint)
+app.register_blueprint(usuario_blueprint)
 
 
 @app.route("/")
@@ -111,15 +113,10 @@ def dashboard():
     id_usuario = session.get('id_usuario')
     usuario    = Usuario.select_one_user(id_usuario)
     if usuario.adm:
-        retorno = Usuario.select_all_user(listar_adm = False)
-
-        if retorno.get('status') != 'ok':
-            return retorno, 500
-
         return render_template(
             "dashboard_admin.html",
             nome_usuario  = usuario.nome,
-            list_usuarios = retorno.get('list_usuarios')
+            id_usuario    = usuario.id
         )
     else:
         list_tarefas = Tarefa.select_all_tarefa(id_usuario)

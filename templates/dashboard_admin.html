@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="text-center w-100">
                 <h2 class="fw-bold">Painel Administrador</h2>
-                <p class="text-muted">Você tem <span class="badge bg-primary">{{ list_usuarios | length }} Usuários</span> no sistema hoje.</p>
+                <p class="text-muted">Você tem <span id="qtd_usuarios" class="badge bg-primary">{{ list_usuarios | length }} Usuários</span> no sistema hoje.</p>
             </div>
         </div>
 
@@ -24,23 +24,10 @@
                         <th class="text-center">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for usuario in list_usuarios %}
+                <tbody id="tabela_usuarios">
                     <tr>
-                        <td class="align-middle ps-4">{{ usuario.nome }}</td>
-                        <td class="text-muted align-middle">{{ usuario.email }}</td>
-                        <td class="text-center align-middle">
-                            <span class="badge rounded-pill {{ 'bg-success' if usuario.tarefas | length > 0 else 'bg-secondary' }}">
-                                {{ usuario.tarefas | length }}
-                            </span>
-                        </td>
-                        <td class="text-center align-middle">
-                            <a href="/admin/usuario/{{ usuario.id }}" class="btn btn-sm btn-outline-primary">
-                                Ver Detalhes
-                            </a>
-                        </td>
+                        <td colspan="4" class="text-center">Carregando usuários...</td>
                     </tr>
-                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -48,4 +35,57 @@
 
     </div>
 </div>
+<script>
+    async function carregarUsuarios() {
+        const tbody        = document.getElementById('tabela_usuarios');
+        const qtd_usuarios = document.getElementById('qtd_usuarios');
+
+        // Defina seus parâmetros aqui
+        const params = new URLSearchParams({
+            id_usuario: {{ id_usuario }},
+            lista_adm : false
+        });
+
+        try {
+            const response = await fetch(`/users?${params.toString()}`);
+            if (!response.ok) throw new Error('Falha ao buscar dados');
+
+            const usuarios         = await response.json();
+            tbody.innerHTML        = '';
+            qtd_usuarios.innerHTML = usuarios.length + ' Usuários';
+
+            if (usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum usuário encontrado.</td></tr>';
+                return;
+            }
+
+            usuarios.forEach(usuario => {
+                const badgeClass = usuario.total_tarefas > 0 ? 'bg-success' : 'bg-secondary';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="align-middle ps-4">${usuario.nome}</td>
+                    <td class="text-muted align-middle">${usuario.email}</td>
+                    <td class="text-center align-middle">
+                        <span class="badge rounded-pill ${badgeClass}">
+                            ${usuario.total_tarefas}
+                        </span>
+                    </td>
+                    <td class="text-center align-middle">
+                        <a href="/admin/usuario/${usuario.id}" class="btn btn-sm btn-outline-primary">
+                            Ver Detalhes
+                        </a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+        } catch (error) {
+            console.error(error);
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Erro ao carregar dados.</td></tr>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarUsuarios);
+</script>
 {% endblock %}
