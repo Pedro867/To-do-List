@@ -10,14 +10,14 @@ tarefa_blueprint = Blueprint('tarefa', __name__)
 def adicionar_tarefa():
     nome_tarefa       = request.form.get('nome_tarefa')
     prioridade_tarefa = int(request.form.get('prioridade_tarefa'))
-    id_usuario        = session['id_usuario']
+
     if not nome_tarefa or not prioridade_tarefa:
         return {
             'status': 'erro',
             'msg'   : 'Dados da tarefa não foram recebidos'
         }, 400
 
-    retorno = Tarefa.insert_tarefa(id_usuario, nome_tarefa, prioridade_tarefa)
+    retorno = Tarefa.insert_tarefa(session['id_usuario'], nome_tarefa, prioridade_tarefa)
     if retorno.get('status') != 'ok':
         return retorno, 500
 
@@ -37,16 +37,20 @@ def editar_tarefa(id_tarefa):
         }, 400
 
     tarefa = Tarefa.select_one_tarefa(id_tarefa)
-    if tarefa.id_usuario == session.get('id_usuario'):
-        Tarefa.update_tarefa(
-            id_tarefa,
-            novo_nome_tarefa,
-            nova_prioridade_tarefa
-        )
+    if not tarefa.usuario_proprietario(session.get('id_usuario')):
+        return {
+            'status': 'erro',
+            'msg'   : 'Essa tarefa não pertence a esse usuário.'
+        }, 401
+
+    retorno = Tarefa.update_tarefa(id_tarefa, novo_nome_tarefa, nova_prioridade_tarefa)
+
+    if retorno.get('status') != 'ok':
+        return retorno, 500
 
     return {
         'status': 'ok',
-        'msg'   : 'Tarefa editada com sucesso.',
+        'msg'   : retorno.get('msg'),
         'url'   : url_for('dashboard')
     }, 200
 

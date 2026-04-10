@@ -73,7 +73,7 @@ class Tarefa(db.Model):
     def update_tarefa(
         id_tarefa        : int,
         nom_tarefa       : str  = None,
-        prioridade_tarefa: str  = None,
+        prioridade_tarefa: int  = None,
         tarefa_concluida : bool = None
     ):
         try:
@@ -85,11 +85,17 @@ class Tarefa(db.Model):
             if tarefa_concluida is not None:
                 tarefa.concluida = tarefa_concluida
             db.session.commit()
-            return True, "ok"
+            return {
+                'status': 'ok',
+                'msg'   : 'Tarefa editada com sucesso.'
+            }
         except Exception as e:
             db.session.rollback()
             print(f"Erro ao editar tarefa: {e}")
-            return False, "Erro interno no banco de dados"
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro interno no banco de dados'
+            }
 
     @staticmethod
     def delete_tarefa(id_tarefa: int):
@@ -101,3 +107,6 @@ class Tarefa(db.Model):
             db.session.rollback()
             print(f"Erro ao deletar tarefa: {e}")
             return False, "Erro interno no banco de dados"
+
+    def usuario_proprietario(self, id_usuario: int | str) -> bool:
+        return str(self.id_usuario) == str(id_usuario)
