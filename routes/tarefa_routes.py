@@ -82,17 +82,22 @@ def deletar_tarefa(id_tarefa):
 @login_required
 def concluir_tarefa(id_tarefa):
     tarefa = Tarefa.select_one_tarefa(id_tarefa)
-    if tarefa.id_usuario == session.get('id_usuario'):
-        Tarefa.update_tarefa(
-            id_tarefa        = id_tarefa,
-            tarefa_concluida = not tarefa.concluida
-        )
+
+    if not tarefa.usuario_proprietario(session.get('id_usuario')):
         return {
-            'status': 'ok',
-            'msg'   : 'Status da tarefa atualizado com sucesso.'
-        }, 200
+            'status': 'erro',
+            'msg'   : 'Essa tarefa não pertence a esse usuário.'
+        }, 401
+
+    retorno = Tarefa.update_tarefa(
+        id_tarefa        = id_tarefa,
+        tarefa_concluida = not tarefa.concluida
+    )
+
+    if retorno.get('status') != 'ok':
+        return retorno, 500
 
     return {
-        'status': 'erro',
-        'msg'   : 'Acesso não autorizado.'
-    }, 403
+        'status': 'ok',
+        'msg'   : 'Status da tarefa atualizado com sucesso.'
+    }, 200
