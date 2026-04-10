@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from dotenv import load_dotenv
 from models.usuarios import Usuario
 from models.usuarios import Tarefa
@@ -95,10 +95,10 @@ def register():
         return render_template('register.html', msg=erro, email=email, senha=senha)
 
     retorno = Usuario.insert_usuario(nome, email, senha)
-    if retorno['status'] == 'ok':
-        return redirect(url_for('login'))
-    else:
-        return retorno, 500
+    if retorno['status'] != 'ok':
+        return jsonify(retorno), 500
+
+    return redirect(url_for('login'))
 
 
 @app.route("/logout")
