@@ -8,12 +8,18 @@ tarefa_blueprint = Blueprint('tarefa', __name__)
 @tarefa_blueprint.route("/tarefa", methods=['POST'])
 @login_required
 def adicionar_tarefa():
-    if request.method == 'POST':
-        nome_tarefa       = request.form.get('nome_tarefa')
-        prioridade_tarefa = int(request.form.get('prioridade_tarefa'))
-        id_usuario        = session['id_usuario']
-        if nome_tarefa and prioridade_tarefa and id_usuario:
-            Tarefa.insert_tarefa(id_usuario, nome_tarefa, prioridade_tarefa)
+    nome_tarefa       = request.form.get('nome_tarefa')
+    prioridade_tarefa = int(request.form.get('prioridade_tarefa'))
+    id_usuario        = session['id_usuario']
+    if not nome_tarefa or not prioridade_tarefa:
+        return {
+            'status': 'erro',
+            'msg'   : 'Dados da tarefa não foram recebidos'
+        }, 400
+
+    retorno = Tarefa.insert_tarefa(id_usuario, nome_tarefa, prioridade_tarefa)
+    if retorno.get('status') != 'ok':
+        return retorno, 500
 
     return redirect(url_for('dashboard'))
 

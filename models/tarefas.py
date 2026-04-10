@@ -55,12 +55,19 @@ class Tarefa(db.Model):
             nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=prioridade_tarefa)
             db.session.add(nova_tarefa)
             db.session.commit()
-            return True, nova_tarefa
+            return {
+                'status'   : 'ok',
+                'msg'      : 'Tarefa criada com sucesso.',
+                'id_tarefa': nova_tarefa.id
+            }
 
         except Exception as e:
             db.session.rollback()
             print(f"Erro ao inserir tarefa: {e}")
-            return False, "Erro interno no banco de dados"
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro interno no banco de dados.'
+            }
 
     @staticmethod
     def update_tarefa(
