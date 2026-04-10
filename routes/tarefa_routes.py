@@ -69,7 +69,7 @@ def concluir_tarefa(id_tarefa):
         return {
             'status': 'ok',
             'msg'   : 'Status da tarefa atualizado com sucesso.'
-        }, 204
+        }, 200
 
     return {
         'status': 'erro',
