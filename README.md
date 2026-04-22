@@ -69,5 +69,23 @@ Crie um banco PostgreSQL e configure a DATABASE_URL no seu arquivo .env
 > python app.py
 > ```
 
+## 🧪 Como Executar os Testes
+Este projeto possui testes automatizados construídos com **Pytest** para validar o comportamento das rotas da aplicação.
+
+1. Instale as dependências de teste (caso não tenha instalado via requirements.txt):
+> ```bash
+> pip install pytest pytest-cov
+> ```
+
+2. Para rodar os testes:
+> ```bash
+> pytest
+> ```
+
+3. Para gerar o relatório de cobertura de código (Coverage):
+> ```bash
+> pytest --cov=. --cov-report term-missing
+> ```
+
 ## Imagens
 <img width="1918" height="883" alt="image" src="https://github.com/user-attachments/assets/ad46088d-e0bc-412f-8405-eac937187a09" />
