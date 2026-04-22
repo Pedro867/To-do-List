@@ -6,7 +6,7 @@ def test_adicionar_tarefa_com_sucesso(logged_in_client, mock_tarefa):
 
     response = logged_in_client.post('/tarefa', data={
         'nome_tarefa'      : 'Teste Unitário',
-        'prioridade_tarefa': '1'
+        'prioridade_tarefa': 1
     })
 
     assert response.status_code == 302
