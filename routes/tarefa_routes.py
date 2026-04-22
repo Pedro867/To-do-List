@@ -8,7 +8,7 @@ tarefa_blueprint = Blueprint('tarefa', __name__)
 @login_required
 def adicionar_tarefa():
     nome_tarefa       = request.form.get('nome_tarefa')
-    prioridade_tarefa = int(request.form.get('prioridade_tarefa'))
+    prioridade_tarefa = request.form.get('prioridade_tarefa')
 
     if not nome_tarefa or not prioridade_tarefa:
         return jsonify({
@@ -16,11 +16,13 @@ def adicionar_tarefa():
             'msg'   : 'Dados da tarefa não foram recebidos'
         }), 400
 
+    prioridade_tarefa = int(prioridade_tarefa)
+
     retorno = Tarefa.insert_tarefa(session['id_usuario'], nome_tarefa, prioridade_tarefa)
     if retorno.get('status') != 'ok':
         return jsonify(retorno), 500
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('dashboard'), 302)
 
 
 @tarefa_blueprint.route("/tarefa/<int:id_tarefa>", methods=['PUT'])
