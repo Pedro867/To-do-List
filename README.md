@@ -70,7 +70,7 @@ Crie um banco PostgreSQL e configure a DATABASE_URL no seu arquivo .env
 > ```
 
 ## 🧪 Como Executar os Testes
-Este projeto possui testes automatizados construídos com **Pytest** para validar o comportamento das rotas da aplicação.
+Este projeto possui testes unitários construídos com **Pytest** para validar o comportamento das rotas da aplicação.
 
 1. Instale as dependências de teste (caso não tenha instalado via requirements.txt):
 > ```bash
