@@ -88,4 +88,12 @@ Este projeto possui testes unitários construídos com **Pytest** para validar o
 > ```
 
 ## Imagens
-<img width="1918" height="883" alt="image" src="https://github.com/user-attachments/assets/ad46088d-e0bc-412f-8405-eac937187a09" />
+Tela de Login
+<img width="1900" height="800" alt="login" src="https://github.com/user-attachments/assets/f42f7330-b269-4175-8ca5-8e2fff15d957" />
+
+Tela Principal
+<img width="1900" height="800" alt="Tarefas" src="https://github.com/user-attachments/assets/377ff6a2-9552-48ae-b6f4-40e10b1f793a" />
+
+Tela de Perfil
+<img width="1900" height="800" alt="image" src="https://github.com/user-attachments/assets/b64d6ef9-303e-42e7-a61c-969ae80d86db" />
+
