@@ -17,7 +17,7 @@ class Tarefa(db.Model):
         return f'<Tarefa {self.nome_tarefa}>'
 
     @classmethod
-    def contar_por_prioridade(cls, id_usuario):
+    def contar_por_prioridade(cls, id_usuario: int) -> dict:
         """ Retorna um dicionário {prioridade: quantidade} para o usuário """
         resultados = cls.query.with_entities(
             cls.prioridade_tarefa,
@@ -50,7 +50,7 @@ class Tarefa(db.Model):
         id_usuario       : int,
         nome_tarefa      : str,
         prioridade_tarefa: int
-    ):
+    ) -> dict:
         try:
             nova_tarefa = Tarefa(nome_tarefa=nome_tarefa, id_usuario=id_usuario, prioridade_tarefa=prioridade_tarefa)
             db.session.add(nova_tarefa)
@@ -75,7 +75,7 @@ class Tarefa(db.Model):
         nom_tarefa       : str  = None,
         prioridade_tarefa: int  = None,
         tarefa_concluida : bool = None
-    ):
+    ) -> dict:
         try:
             tarefa = Tarefa.select_one_tarefa(id_tarefa)
             if nom_tarefa is not None:
@@ -98,7 +98,7 @@ class Tarefa(db.Model):
             }
 
     @staticmethod
-    def delete_tarefa(id_tarefa: int):
+    def delete_tarefa(id_tarefa: int) -> dict:
         try:
             tarefa = Tarefa.select_one_tarefa(id_tarefa)
             db.session.delete(tarefa)
