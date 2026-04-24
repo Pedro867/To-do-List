@@ -29,7 +29,7 @@ def adicionar_tarefa():
 @login_required
 def editar_tarefa(id_tarefa):
     novo_nome_tarefa       = request.form.get('nome')
-    nova_prioridade_tarefa = int(request.form.get('prioridade'))
+    nova_prioridade_tarefa = request.form.get('prioridade')
 
     if not novo_nome_tarefa or not nova_prioridade_tarefa:
         return jsonify({
@@ -44,7 +44,8 @@ def editar_tarefa(id_tarefa):
             'msg'   : 'Essa tarefa não pertence a esse usuário.'
         }), 401
 
-    retorno = Tarefa.update_tarefa(id_tarefa, novo_nome_tarefa, nova_prioridade_tarefa)
+    nova_prioridade_tarefa = int(nova_prioridade_tarefa)
+    retorno                = Tarefa.update_tarefa(id_tarefa, novo_nome_tarefa, nova_prioridade_tarefa)
     if retorno.get('status') != 'ok':
         return jsonify(retorno), 500
 

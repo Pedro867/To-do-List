@@ -94,7 +94,7 @@ class Tarefa(db.Model):
             print(f"Erro ao editar tarefa: {e}")
             return {
                 'status': 'erro',
-                'msg'   : 'Erro interno no banco de dados'
+                'msg'   : 'Erro interno no banco de dados.'
             }
 
     @staticmethod
